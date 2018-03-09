@@ -26,7 +26,7 @@
 1. 算法的接口文件
 	* C/C++: 
 		* （必须）[ji.h](./ji.h) 
-		* （非必须）[ji_util.h](./ji_util.h)
+		* （非必须）[ji_util.hpp](./ji_util.hpp)
 	* Python
 		* （必须）[ji.py](./ji.py)
 2. [Docker操作指导与上传方式](./doc/Docker安装与简单使用指南.docx)
