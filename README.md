@@ -1,8 +1,3 @@
-<div align="center">
-![LOGO](./img/LOGO.jpeg)
-</div>
-
------------------
 
 | **`Linux`** |
 |-------------|
