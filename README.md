@@ -1,7 +1,12 @@
-### README
-
+<div align="center">
 ![LOGO](./img/LOGO.jpeg)
+</div>
 
+-----------------
+
+| **`Linux`** |
+|-------------|
+|![Build Status](./img/build_and_pass.svg)|
 
 #### 说明
 本项目为开发者将视觉算法上传到[极市平台](http://cvmart.net/)进行宣传销售等的帮助文档，如有问题，可以联系极市小助手（微信：Extreme-Vision）
