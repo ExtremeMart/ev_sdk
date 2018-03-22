@@ -35,6 +35,7 @@
 		* [如何把图片文件转换为buffer输入并做测试](./sample_c/standard_sample(convert_file_to_buffur)/)
 		* [如何从buffer转换到opencv的Mat格式](./sample_c/convert_buffer_to_opencv_mat/)
 		* [如何把算法代码编译位动态库](./sample_c/gcc-so.sh)
+		* JSON输出格式建议使用[cJSON](https://github.com/DaveGamble/cJSON)库标准输出，输出格式验证可到[bejson](https://www.bejson.com/)进行验证
 		* 持续更新...
 	* [Python代码示例](./sample_py)
 		* 持续更新
