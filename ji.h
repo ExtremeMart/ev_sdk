@@ -2,9 +2,9 @@
 #define JI_H
 
 /*
- * Notes:
- * 1. If use init funciton, no need to release library or model.
- * 2. Please release image inside the functions(ji_calc).
+ *  如果是图片分析，需要实现ji_init,ji_create_predictor,ji_calc_file,ji_calc_buffer,ji_destory_predictor;
+ *
+ *  如果是视频分析，需要实现ji_init,ji_create_predictor,ji_calc_video_file,ji_calc_video_frame.
  *
  */
 
@@ -23,15 +23,13 @@ extern "C" {
 	}JI_CV_FRAME;
 	
    /*
-      define call back function 
-      parameters:
-        code : event code
-        json : event
-      return :
-        0:success
-        others : fail
-    */ 	
-	typedef int (*JI_CB)(int code, const char* json);
+      event defination
+    */
+	typedef struct
+	{
+		int code; //event code
+		char* json; //event
+	}JI_EVENT;
 
     /* 
         init library/model
@@ -46,10 +44,7 @@ extern "C" {
 	*/
     void *ji_create_predictor();
 
-	/*
-	destory instance
-	*/
-    void ji_destory_predictor(void* predictor);
+
    /*
       analysis image
       parameters:
@@ -80,24 +75,29 @@ extern "C" {
       parameters:
         infn : input file name
         outfn : output file name
-        cb : call back function point 
+        event : result event
       return :
         0:success
         others : fail
     */ 
-    int ji_calc_video_file(void* predictor, const char* infn, const char* args, const char* outfn, JI_CB cb);
+    int ji_calc_video_file(void* predictor, const char* infn, const char* args, const char* outfn, JI_EVENT* event);
 
    /*
       analysis video frame
       parameters:
         inframe : input frame
         outframe : output frame
-        cb : call back function point 
+        event : result event
       return :
         0:success
         others : fail
     */     
-    int ji_calc_video_frame(void* predictor, JI_CV_FRAME* inframe, const char* args, JI_CV_FRAME** outframe, JI_CB cb);
+    int ji_calc_video_frame(void* predictor, JI_CV_FRAME* inframe, const char* args, JI_CV_FRAME* outframe, JI_EVENT* event);
+    
+    /*
+     destory instance
+     */
+    void ji_destory_predictor(void* predictor);
     
 }
 #endif
