@@ -8,6 +8,13 @@
  *
  */
 
+/*
+ *  如果是图片分析，需要实现ji_init,ji_create_predictor,ji_calc_file,ji_calc_buffer,ji_destory_predictor;
+ *
+ *  如果是视频分析，需要实现ji_init,ji_create_predictor,ji_calc_video_file,ji_calc_video_frame.
+ *
+ */
+
 extern "C" {
 	
 	/*
