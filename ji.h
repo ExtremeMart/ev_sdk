@@ -10,7 +10,7 @@
 
 /*
  *  算法分析分为图片、视频、视频单帧三种类型接口，请开发者根据自己算法功能选择接口进行实现
- *  接口文件.h文件无需修改，未使用和实现的接口在.cpp文件中，并统一返回int型-2
+ *  接口文件.h文件无需修改，未使用或实现的接口在.cpp文件中，并统一返回int型-2，使用的接口统一返回 0
  *  接口实现包括ji_init（插件初始化）,ji_create_predictor（创建检测器实例）,ji_destory_predictor(释放检测器实例)
  *  ji_calc(图片buffer分析接口),ji_calc_file(图片文件分析接口),ji_calc_video_file（视频分析接口）,ji_calc_video_frame（单帧分析接口）
  *
