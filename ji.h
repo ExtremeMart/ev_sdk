@@ -9,11 +9,11 @@
  */
 
 /*
- *  算法分析分为图片、视频、视频单帧三种类型接口，请开发者根据自己算法功能选择接口进行实现
- *  接口文件.h文件无需修改，未使用或实现的接口在.cpp文件中，并统一返回int型-2，使用的接口统一返回 0
- *  接口实现包括ji_init（插件初始化）,ji_create_predictor（创建检测器实例）,ji_destory_predictor(释放检测器实例)
- *  ji_calc(图片buffer分析接口),ji_calc_file(图片文件分析接口),ji_calc_video_file（视频分析接口）,ji_calc_video_frame（单帧分析接口）
- *
+ *  算法分析分为图片、视频、视频单帧三种类型接口,请开发者根据自己算法功能选择接口进行实现,并自行实现接口调用的demo演示,方便测试人员进行接口性能测试
+ *  接口文件.h文件无需修改,未使用或实现的接口在.cpp文件中,并统一返回int型-2,使用的接口统一返回 0或者-1
+ *  接口实现包括ji_init（插件、license初始化）,ji_create_predictor（创建检测器实例）,ji_destory_predictor(释放检测器实例)
+ *  ji_calc(图片buffer分析接口),ji_calc_file(图片文件分析接口),ji_calc_video_file（视频分析接口）,ji_calc_video_frame（视频单帧分析接口）
+ *	图片、视频单帧接口输入一次返回一次结果（图片、单帧文件保存路径和json)；视频接口输入视频实时返回视频结果保存在本地文件夹,分析完成,根据返回结果长度实例化json,打印所有帧json信息,然后释放json
  */
 
 extern "C" {
@@ -32,7 +32,7 @@ typedef struct {
 
 /*
  event defination
- @算法检测器分析结果输出，根据算法实际使用场景由极视角相关工作人员定义
+ @算法检测器分析结果输出,根据算法实际使用场景由极视角相关工作人员定义
  */
 typedef struct {
 	int code; //event code
@@ -40,7 +40,7 @@ typedef struct {
 } JI_EVENT;
 
 /*
- @可选项，初始化应用级插件，例如：log4cpp license等
+ @可选项,初始化应用级插件,例如：log4cpp license等
  return:
  0:success
  -2: not used
@@ -65,11 +65,11 @@ void ji_destory_predictor(void* predictor);
  analysis image buffer
  parameters:
  @para1：检测器实例
- @para2: 输入图片文件Buffer（自行管理图片缓存释放）
+ @para2: 输入图片文件Buffer,统一用C++标准库进行图片到二进制流转换,自行参考ji_file2buffer(imgfile,buffer)函数,请勿用opencv等其它图像处理库函数对图片进行转换（自行管理图片缓存释放）
  @para3: 输入图片Buffer长度
- @para4: 可选项，图片感兴趣区域等绘制
+ @para4: 可选项,图片感兴趣区域等绘制
  @para5: 输出文件名称（自行管理图片缓存释放）
- @para6: 分析图片输出Json信息
+ @para6: 分析图片输出Json信息,主函数中释放JSON
  return :
  0:success
  -2: not used
@@ -84,9 +84,10 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
  parameters:
  @para1：检测器实例
  @para2: 输入图片文件名称
- @para3: 可选项，视频感兴趣区域的绘制
+ @para3: 可选项,视频感兴趣区域的绘制
  @para4: 输出文件名称
- @para5: 分析图片输出Json信息
+ @para5: 分析图片输出Json信息,,主函数中释放JSON
+ @调用此接口
  @return :
  0:success
  -2: not used
@@ -99,9 +100,9 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
  analysis video file
  @para1: 检测器实例
  @para2: 输入视频地址
- @para3: 可选项，图片感兴趣区域等的绘制
+ @para3: 可选项,图片感兴趣区域等的绘制
  @para4: 输出视频地址
- @para5: 分析视频Json信息
+ @para5: 分析视频Json信息,主函数中释放Json
  @return：
  0: success
  -2: not used
@@ -114,9 +115,9 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,
  analysis video frame
  @para1: 检测器实例
  @para2: 输入单帧 （自行管理帧释放）
- @para3: 可选项，单帧分析感兴趣区域的绘制等
+ @para3: 可选项,单帧分析感兴趣区域的绘制等
  @para4: 输出单帧 （自行管理帧释放）
- @para5: 分析视频Json信息
+ @para5: 分析视频Json信息,主函数中释放Json
  @return：
  0: success
  -2: not used
