@@ -4,7 +4,8 @@
 |![Build Status](./img/build_and_pass.svg)|
 
 #### 说明
-本项目为开发者将视觉算法上传到[极市平台](http://cvmart.net/)进行测试，宣传，销售等的帮助文档，如有问题，可以联系极市小助手（微信：Extreme-Vision）
+本项目为开发者将视觉算法上传到[极市平台](http://cvmart.net/)进行测试，宣传，销售等的帮助文档，如有问题，可以联系极市小助手（微信：Extreme-Vision)  
+
 
 
 
@@ -15,25 +16,36 @@
 
 2. 如开发语言为C/C++，需要选择对应的接口文件，并需要并构造函数实现算法,含图片和视频接口，并完善算法SDK所需要的所有文件。
    
-   * （必须）[SDK说明文档参见这里](./【极市】算法SDK说明文档V1.0（C++).pdf)
+   * （必须）[SDK说明文档参见这里](./doc/极市算法SDK说明文档V1.0(C&C++)_180911.md)  
+   
   
-  相关的文件：
+ 
+ 相关的文件：
    * （必须）[ji.h](./ji.h) 接口规范文件
-   * （必须）[ji.cpp](./ji.cpp) 接口实现文件
+   * （必须）[ji.cpp](./ji.cpp) 接口实现文件  
    
-   * （非必须）[ji-image.cpp](./ji-image.cpp) 服装风格识别算法ji.cpp实现样例
-   * （非必须）[main-image.cpp](./main-image.cpp) 服装风格识别调用ji-image.cpp的demo
    
-   * （非必须）[ji-video.cpp](./ji-video.cpp) 视频监控人员是否在岗算法ji.cpp实现样例
-   * （非必须）[main-video.cpp](./ji-video.cpp) 视频监控人员是否在岗调用ji-image.cpp的demo
+   * [ji-image.cpp](./ji-image.cpp) 服装风格识别算法ji.cpp实现样例
+   * [main-image.cpp](./main-image.cpp) 服装风格识别调用ji-image.cpp的demo  
    
-   * （非必须）[ji_util.hpp](./ji_util.hpp)
+     
+     
+     
+   * [ji-video.cpp](./ji-video.cpp) 视频监控人员是否在岗算法ji.cpp实现样例
+   * [main-video.cpp](./main-video.cpp) 视频监控人员是否在岗调用ji-video.cpp的demo 
+   
+     
+     
+   
+   * [ji_util.hpp](./ji_util.hpp)  
+   
  
     
  3. 如开发语言为Python，按照下面接口进行实现。
 		
     * （必须）[ji.py](./ji.py)
-    * （必须）SDK正在更新中
+    * （必须）SDK正在更新中  
+    
 
 
 ## 2.相关文档
@@ -46,7 +58,8 @@
 		* JSON输出格式建议使用[cJSON](https://github.com/DaveGamble/cJSON)库标准输出，输出格式验证可到[bejson](https://www.bejson.com/)进行验证
 		* 持续更新...
 	* [Python代码示例](./sample_py)
-		* 持续更新
+		* 持续更新  
+		
 
 ## 3.上传测试
 
