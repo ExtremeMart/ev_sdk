@@ -25,7 +25,7 @@
    * （非必须）[main-image.cpp](./main-image.cpp) 服装风格识别调用ji-image.cpp的demo
    
    * （非必须）[ji-video.cpp](./ji-video.cpp) 视频监控人员是否在岗算法ji.cpp实现样例
-   * （非必须）[main-video.cpp](./main-video.cpp) 视频监控人员是否在岗调用ji-image.cpp的demo
+   * （非必须）[main-video.cpp](./ji-video.cpp) 视频监控人员是否在岗调用ji-image.cpp的demo
    
    * （非必须）[ji_util.hpp](./ji_util.hpp)
  
