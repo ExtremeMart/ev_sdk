@@ -20,31 +20,30 @@
    
   
  
- 相关的文件：
-   * （必须）[ji.h](./ji.h) 接口规范文件
-   * （必须）[ji.cpp](./ji.cpp) 接口实现文件  
+   * 接口规范ji.h及接口实现文件ji.cpp：
+        * （必须）[ji.h](./ji.h)
+        * （必须）[ji.cpp](./ji.cpp) 
+	
    
    
-   * [ji-image.cpp](./ji-image.cpp) 服装风格识别算法ji.cpp实现样例
-   * [main-image.cpp](./main-image.cpp) 服装风格识别调用ji-image.cpp的demo  
+   * 服装图片风格识别算法ji.cpp实现样例及调用demo
+       * [ji-image.cpp](./ji-image.cpp)
+       * [main-image.cpp](./main-image.cpp)
+       
    
      
-     
-     
-   * [ji-video.cpp](./ji-video.cpp) 视频监控人员是否在岗算法ji.cpp实现样例
-   * [main-video.cpp](./main-video.cpp) 视频监控人员是否在岗调用ji-video.cpp的demo 
+   * 视频监控人员是否在岗算法ji.cpp实现样例及调用demo  
+      * [ji-video.cpp](./ji-video.cpp)
+      * [main-video.cpp](./main-video.cpp)
    
-     
-     
-   
-   * [ji_util.hpp](./ji_util.hpp)  
+     * [ji_util.hpp](./ji_util.hpp)  
    
  
     
  3. 如开发语言为Python，按照下面接口进行实现。
 		
     * （必须）[ji.py](./ji.py)
-    * （必须）SDK正在更新中  
+    *  SDK正在更新中  
     
 
 
