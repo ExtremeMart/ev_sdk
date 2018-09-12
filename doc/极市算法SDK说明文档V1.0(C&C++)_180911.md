@@ -949,4 +949,4 @@ int main(int argc, char *argv[]) {
 
 ## 3.版权说明
 
-版权归属深圳极视角科技公司，深圳极视角科技有限公司对本SDK具有一切最终解释权利。如对文档有任何疑问，请发邮件至developer@cvmart.net 进行咨询，也可以直接发issue到极市**[Github 项目](https://github.com/ExtremeMart/dev-docs)** 进行沟通交流。
+版权归属深圳极视角科技公司，深圳极视角科技有限公司对本SDK具有一切最终解释权利。如对文档有任何疑问，请发邮件至developer@cvmart.net 进行咨询，也可以直接发issue到本项目进行沟通交流。
