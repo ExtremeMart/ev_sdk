@@ -1,3 +1,4 @@
+
 #ifndef JI_UTIL_H
 #define JI_UTIL_H
 
@@ -40,3 +41,4 @@ extern "C"{
 }
 
 #endif // JI_UTIL_H
+
