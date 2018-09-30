@@ -31,27 +31,27 @@
 
 ## 2. ji.h及ji.cpp具体算法样例
 
-### 2.1 图片类算法示例
+### 2.1 算法图片封装接口示例
 
-- 图片类算法ji.cpp实现样例及调用demo 文件 main.cpp
+- 算法图片封装接口ji.cpp实现样例及调用demo 文件 main.cpp
 
   - [ji.cpp](./algorithimias sample(image)/ji.cpp)
   - [main.cpp](./algorithimias sample(image)/main.cpp)
 
 
 
-### 2.2 图片类算法示例 
+### 2.2 算法视频接口封装算法示例 
 
-  - 视频监控人员是否在岗算法ji.cpp实现样例及调用demo  
-    - [ji.cpp](./algorithmias samples(video)/ji.cpp)
-    - [main.cpp](./algorithmias samples(video)/main.cpp)
+  - 算法视频接口封装ji.cpp实现样例及调用demo  
+    - [ji.cpp](./algorithm sample(video)/ji.cpp)
+    - [main.cpp](./algorithm sample(video)/main.cpp)
 
 
 
 ### 2.3 图片转buffer示例
 
-   - [图片文件转buffer的示例代码](./convert_file_to_buffur_c)（用ji_file2buffer 函数实现,buffer为Vector类型）
-   - [buffer转opencv的Mat格式](./convert_buffer_to_opencv_mat_c)(用imdecode 实现，在ji_calc 接口里实现）
+   - [图片文件转buffer的示例代码](./convert File2Buffer)（用ji_file2buffer 函数实现,buffer为Vector类型）
+   - [buffer转opencv的Mat格式](./convert Buffer2Mat)(用imdecode 实现，在ji_calc 接口里实现）
 
 
 
@@ -69,6 +69,7 @@
 * CUDA 8.0 （GPU)
 * GCC 5.4.0
 * ffmpeg 3.1，支持x264
+
 
 
 ## 5. 反馈

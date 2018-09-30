@@ -587,7 +587,7 @@ std::strubg str_encode(data_encode.begin(),data_encode.end())
 
 ### 2.5  算法具体实例
 
-#### 2.5.1.1  图片类算法ji.cpp实例
+#### 2.5.1.1  算法图片接口封装ji.cpp示例
 
 ```
 
@@ -698,7 +698,7 @@ int ji_calc_video_frame(void* predictor, JI_CV_FRAME* inframe, const char* args,
 
 
 
-#### 2.5.1.2  图片类算法demo实现main.cpp,
+#### 2.5.1.2  算法图片接口demo实现示例main.cpp,
 
 ```
 //#include "ji.hpp"
@@ -749,7 +749,7 @@ int main(int argc, char* argv[]) {
 
 
 
-#### 2.5.2.1 视频分析类算法 ji.cpp实例
+#### 2.5.2.1 算法视频接口封装ji.cpp示例
 
 
 ```
@@ -858,7 +858,7 @@ int ji_calc_video_frame(void* predictor, JI_CV_FRAME* inframe, const char* args,
 
 
 
-#### 2.5.2.2  视频分析类算法Demo实现main.cpp
+#### 2.5.2.2  算法视频接口Demo实现示例main.cpp
 
 ```
 #include <iostream>
