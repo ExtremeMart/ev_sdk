@@ -1,6 +1,5 @@
 | **`Linux`**                               |
-| ----------------------------------------- |
-| ![Build Status](./img/build_and_pass.svg) |
+
 
 
 
@@ -35,23 +34,23 @@
 
 - 算法图片封装接口ji.cpp实现样例及调用demo 文件 main.cpp
 
-  - [ji.cpp](./algorithimias sample(image)/ji.cpp)
-  - [main.cpp](./algorithimias sample(image)/main.cpp)
+  - [ji.cpp](./algorithm_sample(image)/ji.cpp)
+  - [main.cpp](./algorithm_sample(image)/main.cpp) 
 
 
 
 ### 2.2 算法视频接口封装算法示例 
 
   - 算法视频接口封装ji.cpp实现样例及调用demo  
-    - [ji.cpp](./algorithm sample(video)/ji.cpp)
-    - [main.cpp](./algorithm sample(video)/main.cpp)
+    - [ji.cpp](./algorithm_sample(video)/ji.cpp)
+    - [main.cpp](./algorithm_sample(video)/main.cpp)
 
 
 
 ### 2.3 图片转buffer示例
 
-   - [图片文件转buffer的示例代码](./convert File2Buffer)（用ji_file2buffer 函数实现,buffer为Vector类型）
-   - [buffer转opencv的Mat格式](./convert Buffer2Mat)(用imdecode 实现，在ji_calc 接口里实现）
+   - [图片文件转buffer的示例代码](./convert_File2Buffer/ji_util.h)（用ji_file2buffer 函数实现,buffer为Vector类型）
+   - [buffer转opencv的Mat格式](./convert_Buffer2Mat/ji_sample_mat.cpp)(用imdecode 实现，在ji_calc 接口里实现）
 
 
 
