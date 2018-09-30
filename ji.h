@@ -128,3 +128,4 @@ int ji_calc_video_frame(void* predictor, JI_CV_FRAME* inframe, const char* args,
 
 }
 #endif
+
