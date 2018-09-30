@@ -6,79 +6,71 @@
 
 #### 说明
 
-本项目为开发者将视觉算法上传到[极市平台](http://cvmart.net/)进行测试，宣传，销售等的帮助文档，如有问题，可以联系极市小助手（微信：Extreme-Vision)  
+本项目为[极市](http://cvmart.net/)开发者技术文档，包括极市平台算法SDK规范，算法示例及环境要求。如有问题，请直接联系极市小助手（微信：Extreme-Vision)  反馈或者提交issue，感谢您的支持。
 
 
 
 
-## 1.算法提交流程
+## 1.C/C++算法SDK规范
 
-1. （假设算法已经开发完成）
+### 1.1 算法SDK详细说明文档
 
+如算法开发语言为C/C++，需要选择对应的接口文件，构造函数实现算法,含图片和视频接口，并完善算法SDK所需要的所有文件，SDK说明文档见下方。
 
-2. 如开发语言为C/C++，需要选择对应的接口文件，并需要并构造函数实现算法,含图片和视频接口，并完善算法SDK所需要的所有文件。
-
-   * （必须）**[SDK说明文档参见这里](./doc/极市算法SDK说明文档V1.0(C&C++)_180911.md)**  
-
+*（**必须**）**[SDK说明文档参见这里](./doc/极市算法SDK说明文档V1.0(C&C++)_180911.md)**  
 
 
 
-  ### 相关文件
+### 1.2 接口规范文件及实现文件
 
-   * 接口规范ji.h及接口实现文件ji.cpp：
-        * （必须）[ji.h](./ji.h)
-        * （必须）[ji.cpp](./ji.cpp) 
-
-
-
-   * 服装图片风格识别算法ji.cpp实现样例及调用demo
-
-       * [ji-image.cpp](./ji-image.cpp)
-       * [main-image.cpp](./main-image.cpp)
+- 算法需要满足接口规范ji.h文件，并在ji.cpp里进行接口实现
+  - （必须）[ji.h](./ji.h)
+  - （必须）[ji.cpp](./ji.cpp) 
 
 
 
-   * 视频监控人员是否在岗算法ji.cpp实现样例及调用demo  
+## 2. ji.h及ji.cpp具体算法样例
 
-      * [ji-video.cpp](./ji-video.cpp)
+### 2.1 图片类算法示例
 
-      * [main-video.cpp](./main-video.cpp)
+- 图片类算法ji.cpp实现样例及调用demo 文件 main.cpp
 
-
-
-  * 非必须
-
-       * [ji_util.hpp](./ji_util.hpp)  
-
-
-    
-  3. 如开发语言为Python，按照下面接口进行实现。
-
-     * （必须）[ji.py](./ji.py)
-     * SDK正在更新中  
+  - [ji.cpp](./algorithimias sample(image)/ji.cpp)
+  - [main.cpp](./algorithimias sample(image)/main.cpp)
 
 
 
-## 2.相关文档
+### 2.2 图片类算法示例 
 
-1. 示例代码
-  * [C/C++代码示例](./sample_c)
-    * [如何把图片文件转换为buffer输入并做测试](./sample_c/standard_sample(convert_file_to_buffur)/)
-    * [如何从buffer转换到opencv的Mat格式](./sample_c/convert_buffer_to_opencv_mat/)
-    * [如何把算法代码编译位动态库](./sample_c/gcc-so.sh)
-    * JSON输出格式建议使用[cJSON](https://github.com/DaveGamble/cJSON)库标准输出，输出格式验证可到[bejson](https://www.bejson.com/)进行验证
-    * 持续更新...
-  * [Python代码示例](./sample_py)
-    * 持续更新  
+  - 视频监控人员是否在岗算法ji.cpp实现样例及调用demo  
+    - [ji.cpp](./algorithmias samples(video)/ji.cpp)
+    - [main.cpp](./algorithmias samples(video)/main.cpp)
 
 
 
-## 3.上传测试
+### 2.3 图片转buffer示例
 
-成功上传算法后，极市会进行算法测试审核，并且将测试结果反馈给开发者。
+   - [图片文件转buffer的示例代码](./convert_file_to_buffur_c)（用ji_file2buffer 函数实现,buffer为Vector类型）
+   - [buffer转opencv的Mat格式](./convert_buffer_to_opencv_mat_c)(用imdecode 实现，在ji_calc 接口里实现）
 
 
 
-## 4.技术支持
+## 3.Python 接口规范
 
-需要任何技术支持，请加小助手微信（Extreme-Vision）或者 QQ 3053890056。如有任何问题，欢迎大家提交issue.
+如开发语言为Python，按照下面接口进行实现。
+
+* （必须）[ji.py](./ji.py)  
+
+
+
+## 4.极市算法环境要求（CPU/GPU)
+
+* Linux Ubuntu 16.04
+* CUDA 8.0 （GPU)
+* GCC 5.4.0
+* ffmpeg 3.1，支持x264
+
+
+## 5. 反馈
+
+如有任何问题，欢迎加小助手微信（Extreme-Vision）或者 QQ 3053890056。如有任何问题，欢迎大家提交issue。
