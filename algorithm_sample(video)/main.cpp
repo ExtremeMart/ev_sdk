@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
         void *predictor = ji_create_predictor();
         ji_calc_video_file(predictor, videoFile, roiErea, videoFileOutput, &event);
         std::cout << event.json << std::endl;
-        delete event.json;
+        delete []event.json;
         event.json = NULL;
         ji_destory_predictor(predictor);
     }
