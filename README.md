@@ -49,7 +49,7 @@
 
 ### 2.3 图片转buffer示例
 
-   - [图片文件转buffer的示例代码](./convert_File2Buffer/ji_util.h)（用ji_file2buffer 函数实现,buffer为Vector类型）
+   - 图片文件转buffer的示例代码[Linux版本](./dev-docs/convert_File2Buffer/linux/ji_util.h)   [Windows版本](./dev-docs/convert_File2Buffer/windows/ji_util.h) （用ji_file2buffer 函数实现,buffer为Vector类型）
    - [buffer转opencv的Mat格式](./convert_Buffer2Mat/ji_sample_mat.cpp)(用imdecode 实现，在ji_calc 接口里实现）
 
 
