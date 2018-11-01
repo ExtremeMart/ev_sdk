@@ -13,6 +13,7 @@
  *  接口文件.h文件无需修改,未使用或实现的接口在.cpp文件中,并统一返回int型-2,使用的接口统一返回 0或者-1
  *  接口实现包括ji_init（插件、license初始化）,ji_create_predictor（创建检测器实例）,ji_destory_predictor(释放检测器实例)
  *  ji_calc(图片buffer分析接口),ji_calc_file(图片文件分析接口),ji_calc_video_file（视频分析接口）,ji_calc_video_frame（视频单帧分析接口）
+ *  重要事情说三遍:所有检测结果返回的图片(outfn)和帧(outframe)大小,请按照原始输入图片(buffer)或帧(infn)的分辨率大小返回
  *	图片、视频单帧接口输入一次返回一次结果（图片、单帧文件保存路径和json)；视频接口输入视频实时返回视频结果保存在本地文件夹,分析完成,根据返回结果长度实例化json,打印所有帧json信息,然后释放json
  */
 
