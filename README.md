@@ -1,4 +1,4 @@
-| **`Linux`**                               |
+| **`Linux/Windows`**                               |
 
 
 
@@ -64,7 +64,7 @@
 
 ## 4.极市算法环境要求（CPU/GPU)
 
-* Linux Ubuntu 16.04
+* Linux Ubuntu 16.04/Windows
 * CUDA 8.0 （GPU)
 * GCC 5.4.0
 * ffmpeg 3.1，支持x264
