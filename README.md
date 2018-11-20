@@ -5,7 +5,7 @@
 
 #### 说明
 
-本项目为[极市]( target="_blank" http://cvmart.net/)开发者技术文档，包括极市平台算法SDK规范，算法示例及环境要求。如有问题，请直接联系极市小助手（微信：Extreme-Vision)  反馈或者提交issue，感谢您的支持。
+本项目为[极市](http://cvmart.net/)开发者技术文档，包括极市平台算法SDK规范，算法示例及环境要求。如有问题，请直接联系极市小助手（微信：Extreme-Vision)  反馈或者提交issue，感谢您的支持。
 
 
 
