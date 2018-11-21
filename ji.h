@@ -50,19 +50,19 @@ typedef struct {
 int ji_init(int argc, char** argv);
 
 /*
- @创建检测器实例
+ @创建检测器实例（必要项）
  creat instance and initiallized that can be used to analysis
  */
 void *ji_create_predictor();
 
 /*
- @释放检测器实例
+ @释放检测器实例（必要项）
  destory instance
  */
 void ji_destory_predictor(void* predictor);
 
 /*
- @分析图片Buffer
+ @分析图片Buffer（图片处理必要项）
  analysis image buffer
  parameters:
  @para1：检测器实例
@@ -80,7 +80,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
 		const char* args, const char* outfn, char** json);
 
 /*
- @分析图片文件
+ @分析图片文件（图片处理必要项）
  analysis image
  parameters:
  @para1：检测器实例
@@ -98,7 +98,7 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
 		const char* outfn, char** json);
 
 /*
- analysis video file
+ analysis video file（视频处理必要项）
  @para1: 检测器实例
  @para2: 输入视频地址
  @para3: 可选项,图片感兴趣区域等的绘制
@@ -113,7 +113,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,
 		const char* outfn, JI_EVENT* event);
 
 /*
- analysis video frame
+ analysis video frame（视频处理必要项）
  @para1: 检测器实例
  @para2: 输入单帧 （自行管理帧释放）
  @para3: 可选项,单帧分析感兴趣区域的绘制等
