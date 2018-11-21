@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include "BoostInterface.h"
-//char * roiPoint = "POINT(0.9 0.5)|POINT(0.9 0.5)";
+//char * roiPoint = "POINT(0.9 0.5)|POINT(0.9 0.5)";这是多点写法（多线段和多个多边形类似）
 
 
 int main(int argc, char* argv[]){
