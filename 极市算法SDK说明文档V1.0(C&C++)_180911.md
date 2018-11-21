@@ -114,7 +114,7 @@ void ji_destory_predictor(void* predictor);
    buffer: 输入图片文件Buffer,统一用C++标准库进行图片到二进制流转换,转换可参考上面面示例代码，请勿用opencv等其它图像处理库函数对图片进行转换（自行管理图片缓存释放）
    length: 输入图片Buffer长度
    args: 可选项,如图片大小，图片感兴趣区域等绘制（规范请看 极市文档 BoostInterface ）
-   outfn: 输出文件名称（自行管理图片缓存释放）
+   outfn: 输出文件名称（自行管理图片缓存释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
    json: 分析图片输出Json信息,主函数中释放JSON(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
@@ -140,9 +140,9 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
 
  输入参数:
    predictor：检测器实例
-   infn: 输入图片文件名称
+   infn: 输入图片文件名称（传入的参数是一个绝对路径）
    args: 可选项，视频感兴趣区域的绘制（规范请看 极市文档 BoostInterface ）
-   outfn: 输出文件名称
+   outfn: 输出文件名称（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
    json: 分析图片输出Json信息，主函数内释放JSON，json输出格式见下面(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回 :
@@ -172,9 +172,9 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
  
  输入参数：
  predictor:在ji_create_predictor创建返回的检测器实例类
- infn: 输入视频地址
+ infn: 输入视频地址（传入的参数是一个绝对路径）
  args: 可选项，视频等的绘制（规范请看 极市文档 BoostInterface ）
- outfn: 输出视频地址
+ outfn: 输出视频地址（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
  event: 分析视频（报警）Json信息，主函数释放JSON，(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
@@ -199,7 +199,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,const
    predictor: 在ji_create_predictor创建返回的检测器实例类
    inframe: 输入单帧 （自行管理帧释放）
    args: 可选项，单帧分析感兴趣区域的绘制等（规范请看 极市文档 BoostInterface ）
-   outframe: 输出单帧 （自行管理帧释放）
+   outframe: 输出单帧 （自行管理帧释放）（返回处理后的单帧，是否保存由调用者决定）
    event: 分析视频Json信息，主函数释放JSON(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
