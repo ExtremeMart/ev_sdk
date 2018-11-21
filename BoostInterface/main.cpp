@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include "BoostInterface.h"
-//char * roiPoint = "POINT(0.9 0.5)|POINT(0.9 0.5)";这是多点写法（多线段和多个多边形类似）
+//char * roiPoint = "POINT(0.9 0.5)|POINT(0.9 0.5)";这是多点写法（多线段和多个多边形类似）里面的参数 为比例分割 例如： 0.1 = 1/10
 // 极市小工具网址  http://dev.polygonlinepointtool.extremevision.com.cn/   
 
 int main(int argc, char* argv[]){
