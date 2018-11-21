@@ -115,7 +115,7 @@ void ji_destory_predictor(void* predictor);
    length: 输入图片Buffer长度
    args: 可选项,如图片大小，图片感兴趣区域等绘制（规范请看 极市文档 BoostInterface ）
    outfn: 输出文件名称（自行管理图片缓存释放）
-   json: 分析图片输出Json信息,主函数中释放JSON
+   json: 分析图片输出Json信息,主函数中释放JSON(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
  0:分析成功
@@ -143,7 +143,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
    infn: 输入图片文件名称
    args: 可选项，视频感兴趣区域的绘制（规范请看 极市文档 BoostInterface ）
    outfn: 输出文件名称
-   json: 分析图片输出Json信息，json输出格式见下面
+   json: 分析图片输出Json信息，主函数内释放JSON，json输出格式见下面(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回 :
    0:分析成功
@@ -175,7 +175,7 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
  infn: 输入视频地址
  args: 可选项，视频等的绘制（规范请看 极市文档 BoostInterface ）
  outfn: 输出视频地址
- event: 分析视频Json信息
+ event: 分析视频（报警）Json信息，主函数释放JSON，(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
  0: 分析成功
@@ -200,7 +200,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,const
    inframe: 输入单帧 （自行管理帧释放）
    args: 可选项，单帧分析感兴趣区域的绘制等（规范请看 极市文档 BoostInterface ）
    outframe: 输出单帧 （自行管理帧释放）
-   event: 分析视频Json信息
+   event: 分析视频Json信息，主函数释放JSON(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
    0: 分析成功
