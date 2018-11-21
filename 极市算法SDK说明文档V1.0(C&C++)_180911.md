@@ -71,7 +71,7 @@ void *ji_create_predictor();
 
 
 
-##### 2.1.2.2 释放检测器
+##### 2.1.2.2 释放检测器（必选项）
 
 ```
 /*
@@ -88,7 +88,7 @@ int ji_destory_predictor(void* predictor);
 
 
 
-#### 2.1.3  分析图片/视频
+#### 2.1.3  分析图片/视频（必选项）
 
 算法分析包括**图片buffer、图片文件、视频、视频单帧**四种类型接口， 开发者需按照算法功能实现相关的接口，并自行实现接口调用的demo演示,方便测试人员进行接口性能测试，输出格式统一为JSON格式，JSON输出格式建议使用[cJSON](https://github.com/DaveGamble/cJSON)库标准输出，输出格式验证可到[bejson](https://www.bejson.com/)进行验证。
 
@@ -99,13 +99,13 @@ int ji_destory_predictor(void* predictor);
 
 
 
-##### 2.1.3.1图片分析
+##### 2.1.3.1图片分析（必选项）
 
 图片分析接口需要同时实现**图片buffer分析（ji_calc）、图片文件分析（ji_calc_file）**两个接口。
 
 
 
-- **分析图片Buffer**
+- **分析图片Buffer**（必选项）
 
 ```
 
@@ -136,7 +136,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
 
 
 
-- **分析图片文件**
+- **分析图片文件**（必选项）
 ```
 /*
 传入图片文件进行分析
@@ -160,13 +160,13 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
 
 
 
-##### 2.1.3.2  视频分析接口
+##### 2.1.3.2  视频分析接口（必选项）
 
 视频分析接口需要同时实现**视频分析（ji_calc_video_file）**和**分析视频单帧（ji_calc_video_frame）**两个接口。
 
 
 
-- **分析视频文件**
+- **分析视频文件**（必选项）
 
 ```
 
@@ -191,7 +191,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,const
 
 
 
-- **分析视频单帧**
+- **分析视频单帧**（必选项）
 
 ```
 
