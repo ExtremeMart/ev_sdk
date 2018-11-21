@@ -78,11 +78,8 @@ void *ji_create_predictor();
 	释放实例函数。
 	输入参数：
 		predictor : 待释放的实例。
-	返回：
-		 0 : 释放成功。
-		-1 : 释放失败。
 */
-int ji_destory_predictor(void* predictor);
+void ji_destory_predictor(void* predictor);
 
 ```
 
