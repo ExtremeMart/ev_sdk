@@ -68,7 +68,7 @@ void ji_destory_predictor(void* predictor);
  @para1：检测器实例
  @para2: 输入图片文件Buffer,统一用C++标准库进行图片到二进制流转换,自行参考ji_file2buffer(imgfile,buffer)函数,请勿用opencv等其它图像处理库函数对图片进行转换（自行管理图片缓存释放）
  @para3: 输入图片Buffer长度
- @para4: 可选项,图片感兴趣区域等绘制
+ @para4: 可选项,图片感兴趣区域等绘制（规范请看 极市文档 BoostInterface ）
  @para5: 输出文件名称（自行管理图片缓存释放）
  @para6: 分析图片输出Json信息,主函数中释放JSON
  return :
@@ -85,7 +85,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
  parameters:
  @para1：检测器实例
  @para2: 输入图片文件名称
- @para3: 可选项,视频感兴趣区域的绘制
+ @para3: 可选项,视频感兴趣区域的绘制（规范请看 极市文档 BoostInterface ）
  @para4: 输出文件名称
  @para5: 分析图片输出Json信息,,主函数中释放JSON
  @调用此接口
@@ -101,7 +101,7 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
  analysis video file（视频处理必要项）
  @para1: 检测器实例
  @para2: 输入视频地址
- @para3: 可选项,图片感兴趣区域等的绘制
+ @para3: 可选项,图片感兴趣区域等的绘制（规范请看 极市文档 BoostInterface ）
  @para4: 输出视频地址
  @para5: 分析视频Json信息,主函数中释放Json
  @return：
@@ -116,7 +116,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,
  analysis video frame（视频处理必要项）
  @para1: 检测器实例
  @para2: 输入单帧 （自行管理帧释放）
- @para3: 可选项,单帧分析感兴趣区域的绘制等
+ @para3: 可选项,单帧分析感兴趣区域的绘制等（规范请看 极市文档 BoostInterface ）
  @para4: 输出单帧 （自行管理帧释放）
  @para5: 分析视频Json信息,主函数中释放Json
  @return：
