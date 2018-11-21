@@ -117,7 +117,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,
  @para1: 检测器实例
  @para2: 输入单帧 （自行管理帧释放）
  @para3: 可选项,单帧分析感兴趣区域的绘制等（规范请看 极市文档 BoostInterface ）
- @para4: 输出单帧 （自行管理帧释放）（返回处理后的单帧，是否保存，调用者决定）
+ @para4: 输出单帧 （自行管理帧释放）（返回处理后的单帧，是否保存由调用者决定）
  @para5: 分析视频Json信息,主函数中释放Json
  @return：
  0: success
