@@ -68,8 +68,8 @@
 * Linux Ubuntu 16.04/Windows
 * CUDA 8.0 （GPU)
 * GCC 5.4.0
-* ffmpeg 3.1，支持x264
-
+* ffmpeg 3.1.11，支持x264
+* Opencv 3.1.0(及以上)
 
 
 ## 5. 反馈
