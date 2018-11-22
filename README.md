@@ -25,7 +25,7 @@
 - 算法需要满足接口规范ji.h文件，并在ji.cpp里进行接口实现（接口参数在ji.h内有详细介绍）
   - （必须）[ji.h](./ji.h) **注意：所有检测结果返回的图片(outfn)和帧(outframe)大小,请按照原始输入图片(buffer)或帧(infn)的分辨率大小返回** 
   - （必须）[ji.cpp](./ji.cpp) 
-- (必须)[demo.cpp]推荐使用极市文档，并且不要在里面添加任何自定义的头文件（main.cpp内已经包含头文件 ji_util.hpp除外（这个是极市推荐的图片转buffer接口 .h文件） 详情请看[demo](./convert_File2Buffer)）。
+- (必须) [demo.cpp](./Test_Demo.cpp) 推荐使用极市文档，并且不要在里面添加任何自定义的头文件（main.cpp内已经包含头文件 ji_util.hpp除外（这个是极市推荐的图片转buffer接口 .h文件） 详情请看[demo](./convert_File2Buffer)）。
 
 
 
