@@ -4,8 +4,8 @@
 int main(int argc, char *argv[]) {
     google::InitGoogleLogging("ev");
     FLAGS_stderrthreshold = google::ERROR;
-//    const char *videoFile = "/home/dx/Desktop/OffDutyV0.1/data/test02.mp4";
-//    const char *videoFileOutput = "/home/dx/Desktop/OffDutyV0.1/dest/out.flv";
+////    const char *videoFile = "/home/dx/Desktop/OffDutyV0.1/data/test02.mp4";
+////    const char *videoFileOutput = "/home/dx/Desktop/OffDutyV0.1/dest/out.flv";
     if(argc < 4){
         std::cout<<"Warning : parameter number not right"<<std::endl;
         return -1;
