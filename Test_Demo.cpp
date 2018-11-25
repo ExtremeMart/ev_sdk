@@ -71,10 +71,7 @@ int main(int argc, char *argv[])
         char *json = NULL;
         jiFile2buffer(inFileName, &buffer);
 
-                double start = get_current_time();
         int ret = ji_calc(predictor, (const unsigned char *)&buffer[0], buffer.size(),NULL, outFileName, &json);
-                double end = get_current_time();
-                std::cout<< inFileName << " ji_calc time is : " << (double)(end-start) << "(ms),res_code is :" << ret << std::endl;
 
         printf("%s", json);
             delete[] json;
@@ -97,9 +94,7 @@ int main(int argc, char *argv[])
         const char* outFileName = argv[2];
         char *json = NULL;
 
-                double start = get_current_time();
         int ret = ji_calc_file(predictor, inFileName, NULL, outFileName, &json);
-                double end = get_current_time();
 
         printf("%s\n", json);
         delete[] json;
@@ -117,10 +112,8 @@ int main(int argc, char *argv[])
             std::cout<<"ji_create_predictor-------NULL"<<std::endl;
             return -1;
         }
-                double start = get_current_time();
+
         int ret = ji_calc_video_file(predictor, videoFile, NULL, videoFileOutput, &event);
-                double end = get_current_time();
-                std::cout<< videoFile << " video_file time is : " << (double)(end-start) << "(ms),res_code is :" << ret << std::endl;
 
         if(event.json !=NULL) {
             std::cout << event.json << std::endl;
@@ -157,9 +150,7 @@ int main(int argc, char *argv[])
                         inf.data = frame.data;
                         inf.type = frame.type();
 
-                        double start = get_current_time();
                         int ret = ji_calc_video_frame(predictor,&inf,NULL,&outf,&event);
-                        double end = get_current_time();
 
                         cv::Mat input__(inf.rows,inf.cols,inf.type,inf.data,inf.step);
                         cv::Mat output__(outf.rows,outf.cols,outf.type,outf.data,outf.step);
@@ -203,10 +194,7 @@ int main(int argc, char *argv[])
                 inf.type = frame.type();
                 std::cout << inf.rows << std::endl;
 
-                double start = get_current_time();
                 int ret = ji_calc_video_frame(predictor,&inf,NULL,&outf,&event);
-                double end = get_current_time();
-                std::cout<< inFileName << " pic_frame time is : " << (double)(end-start) << "(ms),res_code is :" << ret << std::endl;
 
                 cv::Mat input__(inf.rows,inf.cols,inf.type,inf.data,inf.step);
                 cv::Mat output__(outf.rows,outf.cols,outf.type,outf.data,outf.step);
