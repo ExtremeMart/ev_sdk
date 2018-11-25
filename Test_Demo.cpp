@@ -47,7 +47,9 @@ int main(int argc, char *argv[])
         std::cout<<"parameter number not right"<<std::endl;
         return -1;
     }
-
+        
+    const char *videoFile = argv[1];
+    const char *videoFileOutput = argv[2];
     //const char *roiErea = "POLYGON((0.25 0, 1 0, 1 1, 0.25 1))";
 
     if(std::string(argv[3]) == "0"){
