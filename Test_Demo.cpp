@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 
         if(event.json !=NULL) {
             std::cout << event.json << std::endl;
-            delete event.json;
+            delete[] event.json;
             event.json = NULL;
 
                 ji_destory_predictor(predictor);
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
                         writer<<output__;
                         if(event.json !=NULL) {
                                 std::cout << event.json << std::endl;
-                                delete event.json;
+                                delete[] event.json;
                         }
                         delete [] (uchar*)outf.data;
                 }
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
                 writer<<output__;
                 if(event.json !=NULL) {
                         std::cout << event.json << std::endl;
-                        delete event.json;
+                        delete[] event.json;
                 }
                 delete [] (uchar*)outf.data;
 
