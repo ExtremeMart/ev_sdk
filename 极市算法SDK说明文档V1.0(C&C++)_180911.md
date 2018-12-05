@@ -115,7 +115,7 @@ void ji_destory_predictor(void* predictor);
    buffer: 输入图片文件Buffer,统一用C++标准库进行图片到二进制流转换,转换可参考[示例代码](https://github.com/ExtremeMart/dev-docs/tree/master/sample_c/standard_sample(convert_file_to_buffur))，请勿用opencv等其它图像处理库函数对图片进行转换（自行管理图片缓存释放）
    length: 输入图片Buffer长度
    args: 可选项,如图片感兴趣区域等绘制（规范请看 极市文档 BoostInterface ）
-   outfn: 输出文件名称（自行管理图片缓存释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
+   outfn: 输出文件名称（自行管理图片缓存释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径,需要在函数实体内判断该参数是否为空，如果为空则 需要看JSON内容内是否有 image_path 项，如有则保存在默认路径下（例如 工程目录../dest/xxx.jpg），没有则不保存）
    json: 分析图片输出Json信息,主函数中释放JSON(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
@@ -145,7 +145,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
    predictor：检测器实例
    infn: 输入图片文件名称（传入的参数是一个绝对路径）
    args: 可选项，视频感兴趣区域的绘制（规范请看 极市文档 BoostInterface ）
-   outfn: 输出文件名称（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
+   outfn: 输出文件名称（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径,需要在函数实体内判断该参数是否为空，如果为空则 需要看JSON内容内是否有 image_path 项，如有则保存在默认路径下（例如 工程目录../dest/xxx.jpg），没有则不保存）
    json: 分析图片输出Json信息，主函数内释放JSON，json输出格式见下面(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回 :
@@ -291,7 +291,7 @@ void ji_destory_predictor(void* predictor);
  @para3: 输入图片Buffer长度
  @para4: 可选项,图片感兴趣区域等绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
  @para5: 输出文件名称（自行管理图片缓存释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径,
- 如JSON内有image_path选项，则优先判断是否有指定输出保存，如有则按照指定保存，如没有则默认image_path 路径保存，例如工目录下../dest/xxx.jpg）
+ 需要在函数实体内判断该参数是否为空，如果为空则 需要看JSON内容内是否有 image_path 项，如有则保存在默认路径下（例如 工程目录../dest/xxx.jpg），没有则不保存）
  @para6: 分析图片输出Json信息,主函数中释放JSON
  return :
  0:success
@@ -309,7 +309,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
  @para2: 输入图片文件名称（传入的参数是一个绝对路径）
  @para3: 可选项,视频感兴趣区域的绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
  @para4: 输出文件名称（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径,
- 如JSON内有image_path选项，则优先判断是否有指定输出保存，如有则按照指定保存，如没有则默认image_path 路径保存，例如工目录下../dest/xxx.jpg）
+ 需要在函数实体内判断该参数是否为空，如果为空则 需要看JSON内容内是否有 image_path 项，如有则保存在默认路径下（例如 工程目录../dest/xxx.jpg），没有则不保存）
  @para5: 分析图片输出Json信息,主函数中释放JSON
  @调用此接口
  @return :
@@ -325,7 +325,7 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
  @para1: 检测器实例
  @para2: 输入视频地址（传入的参数是一个绝对路径）
  @para3: 可选项,图片感兴趣区域等的绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
- @para4: 输出视频地址（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
+ @para4: 输出视频地址（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径，需要在函数内部判断，如参数为空则不需要保存，如不为空则按照传入绝对路径（例如：../dest/out.mp4）保存）
  @para5: 分析视频Json信息,主函数中释放Json
  @return：
  0: success
@@ -439,6 +439,7 @@ SDK运行输出的结果必须采用Json输出形式，且输出内容中不允�
 	}
 	]
 },
+    "image_path": "#图片保存路径 ~/dest/UUID.jpg #以/dest/为图片文件夹存储相对路径;以C++ UUID库产生随机数,作为图片命名名称;以.jpg为图片后缀#",
     "status": "#分类图片,分类成功0 分类异常-1#",
     "message": "如果status = 0, 输出#Imagefile classify successed# 如果status = -1, 输出#Imagefile classify failed#"	
 }
@@ -466,7 +467,7 @@ info 服装分类信息
 ```
 
 {
-    "timeStamp": "#当前检测视频时间戳（精确到ms）#",
+    "timeStamp": "#当前检测视频时间戳（精确到ms）(例如   123456123.456ms)#",
     "numOfPeople": "#分析区域检测到的人的数量#",
     "status": "#当前检测状态 检测到人1 未检测到人0#",
     "message": "#检测到人message为 #Some People In The Area##未检测到人message为#Nobody In The Area#",
