@@ -1,5 +1,5 @@
 #include "src/ji.h"
-//#include "ji_util.h"//这个为可选项 图片转buffer 但是这个函数已经在下面实现 就不需要打开这个头文件
+//#include "ji_util.h"//这个为可选项 图片转buffer 但是这个函数已经在下面实现 就无需这个头文件
 #include <string.h>
 #include <sstream>
 #include <glog/logging.h>
@@ -9,7 +9,8 @@
 using namespace std;
 /*
 *
-*用demo测试的时候 请注意是否有感兴区域绘制，如有请询问开发者感兴区域 是怎么写的
+*请注意，Demo.cpp文件内，请不要添加 开发者自写的 头文件
+*用demo测试的时候 请注意是否有感兴区域绘制，如有请询问开发者感兴区域 是怎么写的,（推荐使用极市 模板 BoostInterface）
 *如有不同的图片或者视频路径 请自定义
 *
 */
