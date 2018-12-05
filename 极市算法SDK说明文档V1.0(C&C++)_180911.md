@@ -113,7 +113,7 @@ void ji_destory_predictor(void* predictor);
    predictor：检测器实例
    buffer: 输入图片文件Buffer,统一用C++标准库进行图片到二进制流转换,转换可参考上面面示例代码，请勿用opencv等其它图像处理库函数对图片进行转换（自行管理图片缓存释放）
    length: 输入图片Buffer长度
-   args: 可选项,如图片大小，图片感兴趣区域等绘制（规范请看 极市文档 BoostInterface ）
+   args: 可选项,如图片感兴趣区域等绘制（规范请看 极市文档 BoostInterface ）
    outfn: 输出文件名称（自行管理图片缓存释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
    json: 分析图片输出Json信息,主函数中释放JSON(除特殊要求以外，JSON不能保存在硬盘上面)
  
