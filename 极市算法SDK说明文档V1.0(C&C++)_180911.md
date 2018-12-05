@@ -290,7 +290,7 @@ void ji_destory_predictor(void* predictor);
  @para3: 输入图片Buffer长度
  @para4: 可选项,图片感兴趣区域等绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
  @para5: 输出文件名称（自行管理图片缓存释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径,
- 如JSON内有image_path选项，则优先判断是否有指定输出保存，如没有则默认image_path 路径保存，例如工目录下../dest/xxx.jpg）
+ 如JSON内有image_path选项，则优先判断是否有指定输出保存，如有则按照指定保存，如没有则默认image_path 路径保存，例如工目录下../dest/xxx.jpg）
  @para6: 分析图片输出Json信息,主函数中释放JSON
  return :
  0:success
@@ -308,7 +308,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
  @para2: 输入图片文件名称（传入的参数是一个绝对路径）
  @para3: 可选项,视频感兴趣区域的绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
  @para4: 输出文件名称（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径,
- 如JSON内有image_path选项，则优先判断是否有指定输出保存，如没有则默认image_path 路径保存，例如工目录下../dest/xxx.jpg）
+ 如JSON内有image_path选项，则优先判断是否有指定输出保存，如有则按照指定保存，如没有则默认image_path 路径保存，例如工目录下../dest/xxx.jpg）
  @para5: 分析图片输出Json信息,主函数中释放JSON
  @调用此接口
  @return :
