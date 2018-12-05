@@ -91,7 +91,7 @@ void ji_destory_predictor(void* predictor);
 
 **注意**：
 
-- 四个分析接口都需要体现在**ji.cpp**中，未使用或未实现的接口在.cpp文件中统一返回int型-2，使用的接口统一返回 0(成功)或者-1(失败)。
+- 四个分析接口都需要体现在**ji.cpp**中，未使用或未实现的接口在.cpp文件中统一返回int型-2，使用的接口统一返回 0(成功)或者-1(失败，除开-2和0以外的其他任何值)。
 - 图片、视频单帧接口输入一次返回一次结果（图片、单帧文件保存路径和json)；视频接口输入视频实时返回视频结果保存在本地文件夹,分析完成,根据返回结果长度实例化json,打印所有报警帧json信息,然后释放json。
 
 
@@ -111,7 +111,7 @@ void ji_destory_predictor(void* predictor);
  
  输入参数：
    predictor：检测器实例
-   buffer: 输入图片文件Buffer,统一用C++标准库进行图片到二进制流转换,转换可参考上面面示例代码，请勿用opencv等其它图像处理库函数对图片进行转换（自行管理图片缓存释放）
+   buffer: 输入图片文件Buffer,统一用C++标准库进行图片到二进制流转换,转换可参考[示例代码](https://github.com/ExtremeMart/dev-docs/tree/master/sample_c/standard_sample(convert_file_to_buffur))，请勿用opencv等其它图像处理库函数对图片进行转换（自行管理图片缓存释放）
    length: 输入图片Buffer长度
    args: 可选项,如图片感兴趣区域等绘制（规范请看 极市文档 BoostInterface ）
    outfn: 输出文件名称（自行管理图片缓存释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
@@ -175,7 +175,7 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
  输入参数：
  predictor:在ji_create_predictor创建返回的检测器实例类
  infn: 输入视频地址（传入的参数是一个绝对路径）
- args: 可选项，视频等的绘制（规范请看 极市文档 BoostInterface ）
+ args: 可选项，视频感兴趣区域的绘制（规范请看 极市文档 BoostInterface ）
  outfn: 输出视频地址（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
  event: 分析视频（报警）Json信息，主函数释放JSON，(除特殊要求以外，JSON不能保存在硬盘上面)
  
@@ -201,7 +201,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,const
    predictor: 在ji_create_predictor创建返回的检测器实例类
    inframe: 输入单帧 （自行管理帧释放）
    args: 可选项，单帧分析感兴趣区域的绘制等（规范请看 极市文档 BoostInterface ）
-   outframe: 输出单帧 （自行管理帧释放）（返回处理后的单帧，是否保存由调用者决定）
+   outframe: 输出单帧 （自行管理帧释放）（返回处理后的单帧，是否保存需要由调用者决定）
    event: 分析视频Json信息，主函数释放JSON(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
@@ -230,11 +230,11 @@ int ji_calc_video_frame(void* predictor, JI_CV_FRAME* inframe, const char* args,
 
 /*
  *  算法分析分为图片、视频、视频单帧三种类型接口,请开发者根据自己算法功能选择接口进行实现,并自行实现接口调用的demo演示（推荐使用极市模板）,方便测试人员进行接口性能测试
- *  接口文件.h文件无需修改,未使用或未实现的接口在.cpp文件中,并统一返回int型-2(未实现/未使用),使用的接口统一返回 0(成功)或者-1(失败)
+ *  接口文件.h文件无需修改,未使用或未实现的接口在.cpp文件中,并统一返回int型-2(未实现/未使用),使用的接口统一返回 0(成功)或者-1(失败，除开-2和0以外的其他任何值)
  *  接口实现包括ji_init（插件、license初始化）,ji_create_predictor（创建检测器实例）,ji_destory_predictor(释放检测器实例)
  *  ji_calc(图片buffer分析接口),ji_calc_file(图片文件分析接口),ji_calc_video_file（视频分析接口）,ji_calc_video_frame（视频单帧分析接口）
  *  重要事情说三遍:所有检测结果返回的图片(outfn)和帧(outframe)大小,请按照原始输入图片(buffer)或帧(infn)的分辨率大小返回
- *  图片、视频单帧接口输入一次返回一次结果（图片、单帧文件保存路径和json)；视频接口输入视频实时返回视频结果保存在本地文件夹,分析完成,根据返回结果长度实例化json,打印所有报警帧json信息
+ *  图片、视频单帧接口输入一次返回一次结果（图片、单帧文件保存路径和json)；视频接口输入视频实时返回视频结果按需保存在本地文件夹,分析完成,根据返回结果长度实例化json,打印所有报警帧json信息（注意，这里的所有报警帧信息，不能合成为一个JSON，应为，有多少报警帧，就有多少个JSON）
  */
 
 extern "C" {
@@ -537,7 +537,7 @@ char * json = NULL;//new char[204800];
 
 ```
   /*
-  ji.cpp中要求实现的接口函数包括以下七个函数，未使用或未实现的接口在.cpp文件中统一返回int型-2,使用的接口统一返回 0或者-1
+  ji.cpp中要求实现的接口函数包括以下七个函数，未使用或未实现的接口在.cpp文件中统一返回int型-2,使用的接口统一返回 0(成功)或者-1(失败，除开-2和0以外的其他任何值)
   */ 
  
  int ji_init(int argc, char** argv);
