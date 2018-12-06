@@ -189,7 +189,7 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
  predictor:在ji_create_predictor创建返回的检测器实例类
  infn: 输入视频地址（传入的参数是一个绝对路径）
  args: 可选项，视频感兴趣区域的绘制（规范请看 极市文档 BoostInterface ）
- outfn: 输出视频地址（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
+ outfn: 输出视频地址（自行管理释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
  event: 分析视频（报警）Json信息，主函数释放JSON，(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
@@ -214,7 +214,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,const
    predictor: 在ji_create_predictor创建返回的检测器实例类
    inframe: 输入单帧 （自行管理帧释放）
    args: 可选项，单帧分析感兴趣区域的绘制等（规范请看 极市文档 BoostInterface ）
-   outframe: 输出单帧 （自行管理帧释放）（返回处理后的单帧，是否保存需要由调用者决定）
+   outframe: 输出单帧 （返回处理后的单帧，是否保存需要由调用者决定）
    event: 分析视频Json信息，主函数释放JSON(除特殊要求以外，JSON不能保存在硬盘上面)
  
  返回：
@@ -347,7 +347,7 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
  @para1: 检测器实例
  @para2: 输入视频地址（传入的参数是一个绝对路径）
  @para3: 可选项,图片感兴趣区域等的绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
- @para4: 输出视频地址（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径，需要在函数内部判断，如参数为空则不需要保存，如不为空则按照传入绝对路径（例如：../dest/out.mp4）保存）
+ @para4: 输出视频地址 （自行管理释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径，需要在函数内部判断，如参数为空则不需要保存，如不为空则按照传入绝对路径（例如：../dest/out.mp4）保存）
  @para5: 分析视频Json信息,主函数中释放Json
  @return：
  0: success
@@ -362,7 +362,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,
  @para1: 检测器实例
  @para2: 输入单帧 （自行管理帧释放）
  @para3: 可选项,单帧分析感兴趣区域的绘制等（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
- @para4: 输出单帧 （自行管理帧释放）（返回处理后的单帧，是否保存由调用者决定）
+ @para4: 输出单帧 （返回处理后的单帧，是否保存由调用者决定）
  @para5: 分析视频Json信息,主函数中释放Json
  @return：
  0: success
