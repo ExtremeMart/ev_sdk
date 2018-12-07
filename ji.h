@@ -72,7 +72,7 @@ void ji_destory_predictor(void* predictor);
  @para4: 可选项,图片感兴趣区域等绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
  @para5: 输出文件名称（自行管理图片缓存释放）四种情况 需要在算法内部实现
    （
-   1.传入的绝对路径不为空 和 JSON内有 image_path  则保存两次 保存的路径为各自的路径
+   1.传入的绝对路径不为空 和 JSON内有 image_path  则保存一次 保存的路径为传入的路径为准 image_path ："传入的路径"
    2.传入的绝对路径为空 和 JSON内有 image_path  则保存1次 保存的路径为image_path 默认路径（例如 工程目录../dest/xxx.jpg）
    3.传入的绝对路径不为空 和 JSON内没有 images_path  则保存1次 保存的路径为 传入的参数
    4.传入的绝对路径为空 和 JSON内没有 image_path 则不保存
@@ -95,7 +95,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
  @para3: 可选项,视频感兴趣区域的绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
  @para4: 输出文件名称 （自行管理图片缓存释放） 四种情况 需要在算法内部实现
    （
-   1.传入的绝对路径不为空 和 JSON内有 image_path  则保存两次 保存的路径为各自的路径
+   1.传入的绝对路径不为空 和 JSON内有 image_path  则保存一次 保存的路径为传入的路径为准 image_path ："传入的路径"
    2.传入的绝对路径为空 和 JSON内有 image_path  则保存1次 保存的路径为image_path 默认路径（例如 工程目录../dest/xxx.jpg）
    3.传入的绝对路径不为空 和 JSON内没有 images_path  则保存1次 保存的路径为 传入的参数
    4.传入的绝对路径为空 和 JSON内没有 image_path 则不保存
