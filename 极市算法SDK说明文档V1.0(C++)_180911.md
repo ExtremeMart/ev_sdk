@@ -14,7 +14,7 @@
 
 ## 1.功能说明
 
-本版本仅适用于C/C++语言开发的算法版本，SDK实现的功能是让接口集成调用规范化，上线极市平台方便用户体验。
+本版本仅适用于C++语言开发的算法版本，SDK实现的功能是让接口集成调用规范化，上线极市平台方便用户体验。
 
 
 
@@ -212,7 +212,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,const
 
 输入参数：
    predictor: 在ji_create_predictor创建返回的检测器实例类
-   inframe: 输入单帧 （自行管理帧释放）
+   inframe: 输入单帧 
    args: 可选项，单帧分析感兴趣区域的绘制等（规范请看 极市文档 BoostInterface ）
    outframe: 输出单帧 （返回处理后的单帧，是否保存需要由调用者决定）
    event: 分析视频Json信息，主函数释放JSON(除特殊要求以外，JSON不能保存在硬盘上面)
@@ -360,7 +360,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,
 /*
  analysis video frame（视频处理必选项）
  @para1: 检测器实例
- @para2: 输入单帧 （自行管理帧释放）
+ @para2: 输入单帧 
  @para3: 可选项,单帧分析感兴趣区域的绘制等（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
  @para4: 输出单帧 （返回处理后的单帧，是否保存由调用者决定）
  @para5: 分析视频Json信息,主函数中释放Json
