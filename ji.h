@@ -69,7 +69,7 @@ void ji_destory_predictor(void* predictor);
  @para1：检测器实例
  @para2: 输入图片文件Buffer,统一用C++标准库进行图片到二进制流转换,自行参考ji_file2buffer(imgfile,buffer)函数,请勿用opencv等其它图像处理库函数对图片进行转换（自行管理图片缓存释放）
  @para3: 输入图片Buffer长度
- @para4: 可选项,图片感兴趣区域等绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
+ @para4: 可选项,图片感兴趣区域等绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）若调用时有画ROI区域，则检测ROI区域内内容，若调用时ROI参数为空，则分析全部画面
  @para5: 输出文件名称（自行管理图片缓存释放）四种情况 需要在算法内部实现
    （
    1.传入的绝对路径不为空 和 JSON内有 image_path  则保存一次 保存的路径为传入的路径为准 image_path ："传入的路径"
@@ -92,7 +92,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
  parameters:
  @para1：检测器实例
  @para2: 输入图片文件名称（传入的参数是一个绝对路径）
- @para3: 可选项,视频感兴趣区域的绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
+ @para3: 可选项,视频感兴趣区域的绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）若调用时有画ROI区域，则检测ROI区域内内容，若调用时ROI参数为空，则分析全部画面
  @para4: 输出文件名称 （自行管理图片缓存释放） 四种情况 需要在算法内部实现
    （
    1.传入的绝对路径不为空 和 JSON内有 image_path  则保存一次 保存的路径为传入的路径为准 image_path ："传入的路径"
@@ -114,7 +114,7 @@ int ji_calc_file(void* predictor, const char* infn, const char* args,
  analysis video file（视频处理必选项）
  @para1: 检测器实例
  @para2: 输入视频地址（传入的参数是一个绝对路径）
- @para3: 可选项,图片感兴趣区域等的绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
+ @para3: 可选项,图片感兴趣区域等的绘制（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）若调用时有画ROI区域，则检测ROI区域内内容，若调用时ROI参数为空，则分析全部画面
  @para4: 输出视频地址 （自行管理图片缓存释放）（如果需要保存，需要在算法内部实现，传入的参数是一个绝对路径）
  @para5: 分析视频Json信息,主函数中释放Json
  @return：
@@ -129,7 +129,7 @@ int ji_calc_video_file(void* predictor, const char* infn, const char* args,
  analysis video frame（视频处理必选项）
  @para1: 检测器实例
  @para2: 输入单帧 （自行管理帧释放）
- @para3: 可选项,单帧分析感兴趣区域的绘制等（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）
+ @para3: 可选项,单帧分析感兴趣区域的绘制等（传入的ROI感兴趣区域为不固定 规范请看 极市文档 BoostInterface ）若调用时有画ROI区域，则检测ROI区域内内容，若调用时ROI参数为空，则分析全部画面
  @para4: 输出单帧 （返回处理后的单帧，是否保存由调用者决定）
  @para5: 分析视频Json信息,主函数中释放Json
  @return：
