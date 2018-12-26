@@ -432,7 +432,7 @@ int ji_calc_video_frame(void* predictor, JI_CV_FRAME* inframe, const char* args,
 
 ### 2.3  输出Json说明及样例
 
-SDK运行输出的结果必须采用Json输出形式，且输出内容中不允许存在中文。JSON输出格式建议使用[cJSON](https://github.com/DaveGamble/cJSON)库标准输出，输出格式验证可到[bejson](https://www.bejson.com/)进行验证。下图为示例输出json：
+SDK运行输出的结果必须采用Json输出形式，且输出内容中不允许存在中文。JSON输出格式推荐使用cJSON或JSONcpp库标准输出，输出格式验证可到[bejson](https://www.bejson.com/)进行验证。下图为示例输出json：
 
 
 
