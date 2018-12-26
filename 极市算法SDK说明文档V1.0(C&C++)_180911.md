@@ -88,7 +88,7 @@ void ji_destory_predictor(void* predictor);
 
 #### 2.1.3  分析图片/视频（必选项）
 
-算法分析包括**图片buffer、图片文件、视频、视频单帧**四种类型接口， 开发者需按照算法功能实现相关的接口，并自行实现接口调用的demo演示,方便测试人员进行接口性能测试，输出格式统一为JSON格式，JSON输出格式建议使用[cJSON](https://github.com/DaveGamble/cJSON)库标准输出，输出格式验证可到[bejson](https://www.bejson.com/)进行验证。
+算法分析包括**图片buffer、图片文件、视频、视频单帧**四种类型接口， 开发者需按照算法功能实现相关的接口，并自行实现接口调用的demo演示,方便测试人员进行接口性能测试，输出格式统一为JSON格式，JSON输出格式推荐使用cJSON或者jsoncpp库标准输出，输出格式验证可到[bejson](https://www.bejson.com/)进行验证。
 
 **注意**：
 
