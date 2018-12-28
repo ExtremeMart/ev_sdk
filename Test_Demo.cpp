@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         
     const char *videoFile = argv[1];
     const char *videoFileOutput = argv[2];
-    //const char *roiErea = "POLYGON((0.25 0, 1 0, 1 1, 0.25 1))";
+    const char *roiErea = "POLYGON((0.25 0, 1 0, 1 1, 0.25 1))";
 
     if(std::string(argv[3]) == "0"){
         //int iRet = ji_init(argc,&argv[argc - 1]);
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
         char *json = NULL;
         jiFile2buffer(inFileName, &buffer);
 
-        int ret = ji_calc(predictor, (const unsigned char *)&buffer[0], buffer.size(),NULL, outFileName, &json);
+        int ret = ji_calc(predictor, (const unsigned char *)&buffer[0], buffer.size(),roiErea, outFileName, &json);
 
         printf("%s", json);
             delete[] json;
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
         const char* outFileName = argv[2];
         char *json = NULL;
 
-        int ret = ji_calc_file(predictor, inFileName, NULL, outFileName, &json);
+        int ret = ji_calc_file(predictor, inFileName, roiErea, outFileName, &json);
 
         printf("%s\n", json);
         delete[] json;
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
             return -1;
         }
 
-        int ret = ji_calc_video_file(predictor, videoFile, NULL, videoFileOutput, &event);
+        int ret = ji_calc_video_file(predictor, videoFile, roiErea, videoFileOutput, &event);
 
         if(event.json !=NULL) {
             std::cout << event.json << std::endl;
@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
                         inf.data = frame.data;
                         inf.type = frame.type();
 
-                        int ret = ji_calc_video_frame(predictor,&inf,NULL,&outf,&event);
+                        int ret = ji_calc_video_frame(predictor,&inf,roiErea,&outf,&event);
 
                         cv::Mat input__(inf.rows,inf.cols,inf.type,inf.data,inf.step);
                         cv::Mat output__(outf.rows,outf.cols,outf.type,outf.data,outf.step);
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
                 inf.type = frame.type();
                 std::cout << inf.rows << std::endl;
 
-                int ret = ji_calc_video_frame(predictor,&inf,NULL,&outf,&event);
+                int ret = ji_calc_video_frame(predictor,&inf,roiErea,&outf,&event);
 
                 cv::Mat input__(inf.rows,inf.cols,inf.type,inf.data,inf.step);
                 cv::Mat output__(outf.rows,outf.cols,outf.type,outf.data,outf.step);
