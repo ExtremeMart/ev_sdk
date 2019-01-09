@@ -3,9 +3,11 @@
 #include <string.h>
 #include <sstream>
 #include <glog/logging.h>
+#include <sys/time.h>
 #include <vector>
 #include <iostream>
-#include <sys/time.h>
+#include <string.h>
+#include <opencv2/opencv.hpp>
 using namespace std;
 /*
 *
@@ -79,7 +81,6 @@ int main(int argc, char *argv[])
             json = NULL;
 
         ji_destory_predictor(predictor);
-
     }else if(std::string(argv[3]) == "1"){
         //int iRet = ji_init(argc,&argv[argc - 1]);
         //if(iRet == -1){
@@ -120,9 +121,8 @@ int main(int argc, char *argv[])
             std::cout << event.json << std::endl;
             delete[] event.json;
             event.json = NULL;
-
-                ji_destory_predictor(predictor);
         }
+        ji_destory_predictor(predictor);
     }else if(std::string(argv[3]) == "3"){
         //int iRet = ji_init(argc,&argv[argc - 1]);
         //if(iRet == -1){
@@ -138,77 +138,71 @@ int main(int argc, char *argv[])
         cv::VideoCapture capture;
         capture.open(videoFile);
         bool inited = false;
-                while(true){
-                        JI_EVENT event;
-                        event.json = NULL;
-                        cv::Mat frame;
-                        capture>>frame;
-                        if(frame.empty()) break;
-                        JI_CV_FRAME inf,outf;
-                        inf.rows = frame.rows;
-                        inf.cols = frame.cols;
-                        inf.step = frame.step;
-                        inf.data = frame.data;
-                        inf.type = frame.type();
+        while(true){
+              JI_EVENT event;
+              event.json = NULL;
+              cv::Mat frame;
+              capture>>frame;
+              if(frame.empty()) break;
+              JI_CV_FRAME inf,outf;
+              inf.rows = frame.rows;
+              inf.cols = frame.cols;
+              inf.step = frame.step;
+              inf.data = frame.data;
+              inf.type = frame.type();
 
-                        int ret = ji_calc_video_frame(predictor,&inf,roiErea,&outf,&event);
+              int ret = ji_calc_video_frame(predictor,&inf,roiErea,&outf,&event);
 
-                        cv::Mat input__(inf.rows,inf.cols,inf.type,inf.data,inf.step);
-                        cv::Mat output__(outf.rows,outf.cols,outf.type,outf.data,outf.step);
-                        if(!inited){
-                                inited = true;
-                                writer.open(videoFileOutput,CV_FOURCC('F', 'L', 'V', '1'),
-                                                        capture.get(cv::CAP_PROP_FPS),
-                                                        cv::Size(output__.cols,
-                                                                         output__.rows));
+              cv::Mat input__(inf.rows,inf.cols,inf.type,inf.data,inf.step);
+              cv::Mat output__(outf.rows,outf.cols,outf.type,outf.data,outf.step);
+              if(!inited){
+                       inited = true;
+                       writer.open(videoFileOutput,CV_FOURCC('F', 'L', 'V', '1'),
+                                               capture.get(cv::CAP_PROP_FPS),
+                                               cv::Size(output__.cols,output__.rows));
                         }
                         writer<<output__;
                         if(event.json !=NULL) {
-                                std::cout << event.json << std::endl;
-                                delete[] event.json;
-                        }
-                        delete [] (uchar*)outf.data;
-                }
-                writer.release();
-                ji_destory_predictor(predictor);
+                        std::cout << event.json << std::endl;
+                        delete[] event.json;
+               }
+               delete [] (uchar*)outf.data;
+        }
+        writer.release();
+        ji_destory_predictor(predictor);
     }else if(std::string(argv[3]) == "4"){
-
-                const char* inFileName = argv[1];
-
+        const char* inFileName = argv[1];
         cv::VideoWriter writer;
         void * predictor = ji_create_predictor();
         if (predictor == NULL) {
             std::cout<<"ji_create_predictor-------NULL"<<std::endl;
             return -1;
         }
-
         bool inited = false;
+        JI_EVENT event;
+        event.json = NULL;
+        cv::Mat frame = cv::imread(inFileName);
+        JI_CV_FRAME inf,outf;
+        inf.rows = frame.rows;
+        inf.cols = frame.cols;
+        inf.step = frame.step;
+        inf.data = frame.data;
+        inf.type = frame.type();
+        std::cout << inf.rows << std::endl;
 
-                JI_EVENT event;
-                event.json = NULL;
-                cv::Mat frame = cv::imread(inFileName);
-                JI_CV_FRAME inf,outf;
-                inf.rows = frame.rows;
-                inf.cols = frame.cols;
-                inf.step = frame.step;
-                inf.data = frame.data;
-                inf.type = frame.type();
-                std::cout << inf.rows << std::endl;
+        int ret = ji_calc_video_frame(predictor,&inf,roiErea,&outf,&event);
 
-                int ret = ji_calc_video_frame(predictor,&inf,roiErea,&outf,&event);
+        cv::Mat input__(inf.rows,inf.cols,inf.type,inf.data,inf.step);
+        cv::Mat output__(outf.rows,outf.cols,outf.type,outf.data,outf.step);
 
-                cv::Mat input__(inf.rows,inf.cols,inf.type,inf.data,inf.step);
-                cv::Mat output__(outf.rows,outf.cols,outf.type,outf.data,outf.step);
-
-                writer<<output__;
-                if(event.json !=NULL) {
-                        std::cout << event.json << std::endl;
-                        delete[] event.json;
-                }
-                delete [] (uchar*)outf.data;
-
-                writer.release();
-                ji_destory_predictor(predictor);
+        writer<<output__;
+        if(event.json !=NULL) {
+                std::cout << event.json << std::endl;
+                delete[] event.json;
+        }
+        delete [] (uchar*)outf.data;
+        writer.release();
+        ji_destory_predictor(predictor);
     }else {
         std::cout<<"Wrong parameter"<<std::endl;
         }
