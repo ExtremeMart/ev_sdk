@@ -136,7 +136,7 @@ int ji_calc(void* predictor, const unsigned char* buffer, int length,
 
 
 
-**参考代码**：[如何把图片文件转换为buffer输入并做测试](https://github.com/ExtremeMart/dev-docs/tree/master/sample_c/standard_sample(convert_file_to_buffur))
+**参考代码**：[如何把图片文件转换为buffer输入并做测试](https://github.com/ExtremeMart/dev-docs/blob/master/convert_File2Buffer/linux/ji_util.h)
 
 **参考代码**：[BoostInterface](./BoostInterface)
 
