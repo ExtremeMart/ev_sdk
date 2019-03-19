@@ -66,7 +66,7 @@
 ## 4.极市算法环境要求（CPU/GPU)
 
 * Linux Ubuntu 16.04/Windows
-* CUDA 8.0 （GPU)
+* CUDA 10.0 & 8.0 （GPU)
 * GCC 5.4.0
 * ffmpeg 3.1.11，支持x264
 * Opencv 3.4.0
