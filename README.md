@@ -11,7 +11,7 @@
 * 一键sdk及专家模式均可以使用该示例作为实现模板
 * 极市平台提供的算法docker镜像均提供该使用示例
 
-# ev_sdk目录结构
+# ev_sdk工程目录结构
 
     /usr/local/ev_sdk
     ├── README.md       # 本帮助文档
