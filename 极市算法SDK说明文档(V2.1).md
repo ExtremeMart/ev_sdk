@@ -30,7 +30,7 @@
 	* [获取公钥私钥](##获取公钥私钥)
 	* [手动修改公钥授权](##手动修改公钥授权)
 	* [测试license](##测试license)  
-* [Roi 感兴趣区域](#Roi感兴趣区域)
+* [Roi感兴趣区域](#Roi感兴趣区域)
 	* [介绍](##介绍)
 	* [样例](##样例)
 	* [绘画Roi](##绘画Roi)
@@ -75,8 +75,8 @@
 ## 检测器类型值定义
 
 	1.如果算法仅支持不带状态的检测器,传任何参数均创建不带状态的检测器;
-	1.如果算法仅支持带状态的检测器,传任何参数均创建带状态的检测器;
-	2.如果算法同时支持不带或带状态的检测器时：
+	2.如果算法仅支持带状态的检测器,传任何参数均创建带状态的检测器;
+	3.如果算法同时支持不带或带状态的检测器时：
 	  JISDK_PREDICTOR_DEFAULT:       开发者自行决定创建;
 	  JISDK_PREDICTOR_SEQUENTIAL:    创建带状态的检测器;
 	  JISDK_PREDICTOR_NONSEQUENTIAL: 创建不带状态的检测器;
@@ -94,13 +94,13 @@
 
 # 函数说明
 ## ji.h接口说明
-*[ji_init](##初始化)  
-*[ji_create_predictor](##创建检测器（必选项）)  
-*[ji_destroy_predictor](##释放检测器（必选项）)  
-*[ji_calc_buffer](##算法检测针对图片缓冲（图片必选项）)  
-*[ji_calc_file](##算法检测针对图片文件（图片必选项）)  
-*[ji_calc_video_file](##算法检测针对视频文件（视频必选项）)  
-*[ji_calc_frame](##算法检测针对一帧（视频必选项）)  
+* [ji_init](##初始化)  
+* [ji_create_predictor](##创建检测器（必选项）)  
+* [ji_destroy_predictor](##释放检测器（必选项）)  
+* [ji_calc_buffer](##算法检测针对图片缓冲（图片必选项）)  
+* [ji_calc_file](##算法检测针对图片文件（图片必选项）)  
+* [ji_calc_video_file](##算法检测针对视频文件（视频必选项）)  
+* [ji_calc_frame](##算法检测针对一帧（视频必选项）)  
 
 ### 初始化（可选项）
 
@@ -326,8 +326,9 @@ Demo样例
 	通过显示：license is correct.
 	失败显示：invalid license.
 
-#Roi 感兴趣区域
+#Roi感兴趣区域
 极市点线框小工具--------[Roi](http://dev.polygonlinepointtool.extremevision.com.cn/) 
+
 ##介绍
 	在一些项目上也许需要识别固定区域，不用识别全部，就需要用到Roi感兴趣区域。
 	注意：可能会用到多框或多线的情况，详情请咨询工作人员
