@@ -25,7 +25,7 @@
     * [图像处理类算法Json实例](##图像处理类算法Json实例)
 * [模型加解密](#模型加解密)
 	* [模型加密](##模型加密)
-	* [模型解密](##模型解密)
+	* [模型解密API](##模型解密API)
 * [sdk授权](#sdk授权)
 	* [获取公钥私钥](##获取公钥私钥)
 	* [手动修改公钥授权](##手动修改公钥授权)
@@ -200,7 +200,7 @@
                   JI_CV_FRAME *outframe, JI_EVENT *event);
 
 # JSON说明
-## 图像处理类算法Json实例
+## 图像处理类算法输出Json实例
 	{  
 		"info": {  
 		"numOfStyle": "",
@@ -246,7 +246,7 @@ Demo
 	./encrypt_module number_detection_inference.cfg
 	可以不用输32位密钥（有默认密钥）。如需要请必须添加32位。
 
-## 模型解密
+## 模型解密API
 
 	函 数 名    : CreateEncryptor  
 	功能描述    : 进行混淆密钥解密  
@@ -291,18 +291,18 @@ Demo样例
         char *fileContent = (char*)FetchBuffer(file, fileLen);
         std::cout << "FetchBuffer:" << fileContent << std::endl;
 
-#sdk授权
+# sdk授权
 	请先确定是否安装插件 如不确定请执行下列命令
 	apt-get install nvme-cli dmidecode sg3-utils
 
-##获取公钥私钥
+## 获取公钥私钥
 
 	通过/usr/local/ev_sdk/bin/目录 获取rsa
 
 	openssl genrsa -out privateKey.pem 1024
     openssl rsa -in privateKey.pem -pubout -out pubKey.pem
 
-##手动修改公钥授权
+## 手动修改公钥授权
 
 	1.获取公钥头文件
 		目录：/usr/local/ev_sdk/bin  
@@ -312,7 +312,7 @@ Demo样例
 
 	3.确认ji.cpp内有公钥头文件
 
-##测试license
+## 测试license
 	目录：/usr/local/ev_sdk/bin
   
 	./ev_license -r r.txt
@@ -326,14 +326,14 @@ Demo样例
 	通过显示：license is correct.
 	失败显示：invalid license.
 
-#Roi感兴趣区域
+# Roi感兴趣区域
 极市点线框小工具--------[Roi](http://dev.polygonlinepointtool.extremevision.com.cn/) 
 
-##介绍
+## 介绍
 	在一些项目上也许需要识别固定区域，不用识别全部，就需要用到Roi感兴趣区域。
 	注意：可能会用到多框或多线的情况，详情请咨询工作人员
 
-##样例
+## 样例
 	cv::Rect roiRect(0,0,0,0);
     /* 模拟args(roi)的处理 */
     if (!args.empty())
@@ -348,7 +348,7 @@ Demo样例
         }
     }
 	
-##绘画Roi
+## 绘画Roi
 	// roi显示  polylines 函数
     if (m_draw_roi_area)
     {
@@ -366,7 +366,7 @@ Demo样例
 
 **注意**：请绘制Polygon，如多边形则绘制相同的多边形。
 
-#配置文件
+# 配置文件
 	algo_config.json
 	***配置文件目前固定字段有四项，其它的配置字段根据项目拟定，下列四个字段为固定项，务必在代码接口中实现
 	*字段名称：show_result  字段描述：是否实时显示图片或者视频结果 0 不显示 1 显示
@@ -380,8 +380,8 @@ Demo样例
 	  "draw_result":0,
 	  "gpu_id":0
 	}
-#注意
+# 注意
 	1.路径：加载模型和配置文件等，请写绝对路径（例如 /usr/local/ev_sdk/model/model.cfg）
 
-#自测规范
+# 自测规范
 	请先自行测试，test目录下，makefile文件与test.cpp 请不要变动！如可以在test目录下编译通过并且在bin目录下可以运行起来，则规范完成百分之70。
