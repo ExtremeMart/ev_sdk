@@ -8,4 +8,3 @@ ret=$?; if [[ 0 -ne ${ret} ]]; then echo "ev_license failed!"; exit $ret; fi
 
 #./clear.sh
 exit 0
-

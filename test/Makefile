@@ -16,8 +16,7 @@ CPPFLAGS:= \
 	
 LDFLAGS:= \
 	-L../lib -lji \
-	-lglog \
-	-lcrypto
+	-lglog
 	
 LDFLAGS += `pkg-config --libs opencv`
 

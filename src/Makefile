@@ -13,15 +13,17 @@ OBJS:= $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SRCS)))
 
 CPPFLAGS:= \
 	-I../include \
+	-I../src \
 	-I../3rd/cJSON \
-	-I../3rd/license/v5/include \
-    -I../3rd/boost_interface \
-    -I../3rd/encrypted_module-master/include
+	-I../3rd/license/v7.1/include \
+	-I../3rd/boost_interface \
+	-I../3rd/encrypted_module-master/include
 	
 LDFLAGS:= \
-	-lm \
-	-L../3rd/license/v5/lib -lji_license \
-	-L../3rd/encrypted_module-master/lib -lencrypt_wrapper	
+	-L../3rd/license/v7.1/lib -lji_license \
+	-L../3rd/encrypted_module-master/lib -lencrypt_wrapper \
+	-lm -lcrypto
+	
 
 LDFLAGS += `pkg-config --libs opencv`	
 

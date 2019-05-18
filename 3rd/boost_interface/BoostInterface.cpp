@@ -6,21 +6,39 @@
  */
 
 #include "BoostInterface.h"
+#include <iostream>
+#include <exception>
+
 
 typedef boost::geometry::model::d2::point_xy<double> Boost_Point;
 
 void BoostInterface::parsePoint(const std::string& input, const cv::Size& curSize, std::vector<cv::Point>& points)
 {
     Boost_Point point;
-    boost::geometry::read_wkt(input, point);
-    //points.push_back(cv::Point(point.x() * curSize.width, point.y() * curSize.height));
+    try
+    {
+         boost::geometry::read_wkt(input, point);
+    }
+    catch(std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
     points.emplace_back(point.x() * curSize.width, point.y() * curSize.height);    
 }
 
 void BoostInterface::parseLinestring(const std::string& input, const cv::Size& curSize, std::vector<cv::Point>& points)
 {
     boost::geometry::model::linestring<Boost_Point> linstring;
-    boost::geometry::read_wkt(input, linstring);
+    try
+    {
+         boost::geometry::read_wkt(input, linstring);
+    }
+    catch(std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
 
     for(auto& item : linstring)
     {
@@ -31,7 +49,15 @@ void BoostInterface::parseLinestring(const std::string& input, const cv::Size& c
 void BoostInterface::parsePolygon(const std::string& input, const cv::Size& curSize, std::vector<cv::Point>& points)
 {
     boost::geometry::model::polygon<Boost_Point> ploygon;
-    boost::geometry::read_wkt(input, ploygon);
+    try
+    {
+         boost::geometry::read_wkt(input, ploygon);
+    }
+    catch(std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
 
     for (auto& item : ploygon.outer())
     {
@@ -55,6 +81,5 @@ cv::Rect BoostInterface::polygon2Rect(const std::vector<cv::Point>& points)
 
     cv::Rect rect(min_x, min_y, max_x - min_x, max_y - min_y);
     return rect;
-    }
-
+}
 

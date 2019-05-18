@@ -6,6 +6,9 @@ extern "C"
 {
 #endif
 
+/* 版本号 */
+#define EV_SDK_VERSION  "version:v2.1"
+
 /* 函数返回值定义 */
 #define JISDK_RET_SUCCEED               (0)             //成功
 #define JISDK_RET_FAILED                (-1)            //失败
@@ -28,7 +31,6 @@ extern "C"
 #define JISDK_PREDICTOR_DEFAULT         (0)             //默认
 #define JISDK_PREDICTOR_SEQUENTIAL      (1)             //连续的,即带状态的
 #define JISDK_PREDICTOR_NONSEQUENTIAL   (2)             //非连续的,即不带状态的
-
 
 /* 分析输出code值定义 */
 #define JISDK_CODE_ALARM                (0)             //报警
