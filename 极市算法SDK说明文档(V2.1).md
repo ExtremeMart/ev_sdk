@@ -32,8 +32,8 @@
 	* [测试license](##测试license)  
 * [Roi感兴趣区域](#Roi感兴趣区域)
 	* [介绍](##介绍)
-	* [样例](##样例)
-	* [绘画Roi](##绘画Roi)
+	* [样例](##示例)
+	* [绘画Roi](##绘制Roi)
 * [配置文件](#配置文件)
 * [注意](#注意)
 * [自测规范](#自测规范)
@@ -306,7 +306,7 @@ Demo样例
 
 	1.获取公钥头文件
 		目录：/usr/local/ev_sdk/bin  
-		运行：./ev_codec -c pubKey.pem  生成头文件
+		运行：./ev_codec -c pubKey.pem ../src/pubKey.hpp  生成头文件
 
 	2.把头文件拷贝进src目录
 
@@ -333,7 +333,7 @@ Demo样例
 	在一些项目上也许需要识别固定区域，不用识别全部，就需要用到Roi感兴趣区域。
 	注意：可能会用到多框或多线的情况，详情请咨询工作人员
 
-## 样例
+## 示例
 	cv::Rect roiRect(0,0,0,0);
     /* 模拟args(roi)的处理 */
     if (!args.empty())
@@ -348,7 +348,7 @@ Demo样例
         }
     }
 	
-## 绘画Roi
+## 绘制Roi
 	// roi显示  polylines 函数
     if (m_draw_roi_area)
     {
@@ -384,4 +384,4 @@ Demo样例
 	1.路径：加载模型和配置文件等，请写绝对路径（例如 /usr/local/ev_sdk/model/model.cfg）
 
 # 自测规范
-	请先自行测试，test目录下，makefile文件与test.cpp 请不要变动！如可以在test目录下编译通过并且在bin目录下可以运行起来，则规范完成百分之70。
+	请先自行测试，test目录下，makefile文件与test.cpp 请不要变动！如可以在test目录下编译通过并且在bin目录下可以运行起来。
