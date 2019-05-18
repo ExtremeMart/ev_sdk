@@ -306,11 +306,11 @@ Demo样例
 
 	1.获取公钥头文件
 		目录：/usr/local/ev_sdk/bin  
-		运行：./ev_codec -c pubKey.pem ../src/pubKey.hpp  生成头文件
+		运行：./ev_codec -c pubKey.pem ../src/pubKey.hpp && sed -i "s|key|pubKey|g" ../src/pubKey.hpp  生成头文件
 
-	2.把头文件拷贝进src目录
+	2.把头文件pubKey.hpp复制到src目录
 
-	3.确认ji.cpp内有公钥头文件
+	3.确认ji.cpp内有pubKey.hpp头文件
 
 ## 测试license
 	目录：/usr/local/ev_sdk/bin
