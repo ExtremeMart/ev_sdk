@@ -12,7 +12,8 @@ OBJS:= $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SRCS)))
 
 CPPFLAGS:= \
 	-I../include \
-	-I../3rd/cJSON
+	-I../3rd/cJSON \
+	-I../3rd/license/v10/include
 	
 LDFLAGS:= \
 	-L../lib -lji \

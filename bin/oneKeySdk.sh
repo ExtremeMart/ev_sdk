@@ -18,6 +18,7 @@ check_error() {
 #rm -f privateKey.pem pubKey.pem r.txt license.txt
 
 #生成公钥私钥
+: <<'END'
 if [ ! -f ./privateKey.pem ]
 then
     openssl genrsa -out privateKey.pem 1024
@@ -44,6 +45,19 @@ else
    ;;
 
    esac
+fi
+END
+
+#生成公钥私钥
+if [ ! -f ./privateKey.pem ]
+then
+    openssl genrsa -out privateKey.pem 1024
+    check_error "openssl genrsa -out privateKey.pem 1024"
+
+    openssl rsa -in privateKey.pem -pubout -out pubKey.pem
+    check_error "openssl rsa -in privateKey.pem -pubout -out pubKey.pem"
+else
+   echo "检测到rsa密钥已经存在[privateKey.pem,publickey.pem],若想重新生成,请删除这两个文件,并重新运行该脚本!"
 fi
 
 #将公钥转换为c字符串

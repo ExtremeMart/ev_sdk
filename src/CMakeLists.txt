@@ -16,13 +16,13 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${SOURCE_DIR}/include
     ${SOURCE_DIR}/3rd/cJSON
-    ${SOURCE_DIR}/3rd/license/v7.1/include
+    ${SOURCE_DIR}/3rd/license/v10/include
     ${SOURCE_DIR}/3rd/boost_interface
     ${SOURCE_DIR}/3rd/encrypted_module-master/include
 )
 
 link_directories(
-    ${SOURCE_DIR}/3rd/license/v7.1/lib
+    ${SOURCE_DIR}/3rd/license/v10/lib
     ${SOURCE_DIR}/3rd/encrypted_module-master/lib
 )
 
@@ -37,6 +37,7 @@ target_link_libraries(${PROJECT_NAME}
     ${OpenCV_LIBS}
     ji_license
     encrypt_wrapper
-    m crypto
+    crypto
+    curl
 )
 

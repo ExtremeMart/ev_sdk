@@ -42,9 +42,9 @@ void DestroyEncrtptor(void *ptr);
 
 ## for example
 
- `./bin/encrypt_model test_model.proto 01234567890123456789012345678988`
+ `./3rd/encrypted_module-master/encrypt_model ./3rd/encrypted_module-master/test_model.proto 01234567890123456789012345678988`
  
- out file: model_str.hpp, copy this file to "./src" directory and add to ev_sdk project.
+ out file: ./model_str.hpp, copy this file to "./src" directory and add to ev_sdk project.
  
  
  ---

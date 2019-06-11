@@ -6,8 +6,8 @@ extern "C"
 {
 #endif
 
-/* 版本号 */
-#define EV_SDK_VERSION  "version:v2.1"
+/* 版本号,基于license:v10 */
+#define EV_SDK_VERSION  "version:v2.5"
 
 /* 函数返回值定义 */
 #define JISDK_RET_SUCCEED               (0)             //成功
@@ -21,8 +21,8 @@ extern "C"
 /* 
 **
 1.如果算法仅支持不带状态的检测器,传任何参数均创建不带状态的检测器;
-1.如果算法仅支持带状态的检测器,传任何参数均创建带状态的检测器;
-2.如果算法同时支持不带或带状态的检测器时：
+2.如果算法仅支持带状态的检测器,传任何参数均创建带状态的检测器;
+3.如果算法同时支持不带或带状态的检测器时：
   JISDK_PREDICTOR_DEFAULT:       开发者自行决定创建;
   JISDK_PREDICTOR_SEQUENTIAL:    创建带状态的检测器;
   JISDK_PREDICTOR_NONSEQUENTIAL: 创建不带状态的检测器;
@@ -64,12 +64,22 @@ int ji_init(int argc, char **argv);
 
 
 /*
+函 数 名 : ji_reinit
+功能描述    : sdk反初始化函数,主要用于联网license校验线程终止等
+函数参数    : 无
+返回参数    : 无 
+注     意: 无
+*****************************************************************************/
+void ji_reinit();
+
+
+/*
 函 数 名	: ji_create_predictor
 功能描述	: 创建检测器,即每个检测实例的上下文
 函数参数	: 
     pdtype: [必选参数] 输入参数,检测器实例类型,详见"检测器类型值定义"
 返回参数	: 成功返回检测器实例指针,错误返回NULL  
-注     意: 无
+注     意: 授权未通过或超过有效期时，也返回NULL
 *****************************************************************************/
 void* ji_create_predictor(int pdtype);
 

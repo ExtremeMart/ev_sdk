@@ -86,6 +86,8 @@ public:
         /* 输出解密后模型文件，实际开发时可屏蔽该行代码 ??? */
         std::cout << "FetchBuffer:" << fileContent << std::endl;
 
+
+        /* 装载模型请用绝对路径 */
         /* allocate predictor ??? */
         /* 
         ** for example:
@@ -294,42 +296,52 @@ int ji_init(int argc, char **argv)
 /* 
 ** 参数说明
 for example:
-argc：4
+argc：6
 argv[0]: $license
-argv[1]: $timestamp
-argv[2]: $qps
-argv[3]: $version
+argv[1]: $url
+argv[2]: $activation
+argv[3]: $timestamp
+argv[4]: $qps
+argv[5]: $version
 ...
 **
 */
-    if (argc < 4 )
+    if (argc < 6 )
     {
         return JISDK_RET_INVALIDPARAMS;
     }
 
     if (argv[0] == NULL || 
-        argv[3] == NULL)
+        argv[5] == NULL)
     {
         return JISDK_RET_INVALIDPARAMS;
     }
 
     int qps = 0;
-    if (argv[2]) qps = atoi(argv[2]);
+    if (argv[4]) qps = atoi(argv[4]);
 
     /* 
-    ** 请替换算法的公钥
+    ** 请替换算法的公钥,oneKeySdk.sh会自动生成
     for example:
-    ./3rd/license/v7/ev_codec -c pubKey.txt
+    cd /usr/local/ev_sdk/bin && ./ev_codec -c pubKey.pem ../src/pubKey.hpp && sed -i "s|key|pubKey|g" ../src/pubKey.hpp
     ** 
     */
-    return (ji_check_license(pubKey,argv[0], argv[1], qps>0?&qps:NULL, atoi(argv[3])) == EV_SUCCESS)?
+    return (ji_check_license(pubKey, argv[0], argv[1], argv[2],
+            argv[3], qps>0?&qps:NULL, atoi(argv[5])) == EV_SUCCESS)?
             JISDK_RET_SUCCEED:
             JISDK_RET_UNAUTHORIZED;
 }
 
+void ji_reinit()
+{
+    ji_check_license(NULL,NULL,NULL,NULL,NULL,NULL,0);
+}
+
+
 void* ji_create_predictor(int pdtype)
 {
-    if (ji_check_expire() != EV_SUCCESS)
+
+    if (ji_check_expire_only() != EV_SUCCESS)
     {
         return NULL;
     }

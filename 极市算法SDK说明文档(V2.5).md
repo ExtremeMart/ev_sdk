@@ -2,6 +2,7 @@
 
 | 版本 |              内容说明               | 编写人 |  更新时间  |
 | :--: | :---------------------------------: | :----: | :--------: |
+| V2.5 | 更新SDK授权，添加反初始化接口 | YuanCheng.Huang | 2019/06/11 |
 | V2.1 | 更新SDK授权，模型加密，添加一键SDK | YuanCheng.Huang | 2019/05/18 |
 | V2.0 | 更新算法接口及参数,SDK授权，模型加密 | YuanCheng.Huang | 2019/03/27 |
 | V1.2 | 更新接口参数说明 | YuanCheng.Huang | 2018/12/05 |
@@ -94,13 +95,14 @@
 
 # 函数说明
 ## ji.h接口说明
-* [ji_init](##初始化)  
-* [ji_create_predictor](##创建检测器（必选项）)  
-* [ji_destroy_predictor](##释放检测器（必选项）)  
-* [ji_calc_buffer](##算法检测针对图片缓冲（图片必选项）)  
-* [ji_calc_file](##算法检测针对图片文件（图片必选项）)  
-* [ji_calc_video_file](##算法检测针对视频文件（视频必选项）)  
-* [ji_calc_frame](##算法检测针对一帧（视频必选项）)  
+* [ji_init](###初始化) 
+* [ji_reinit](###反初始化) 
+* [ji_create_predictor](###创建检测器（必选项）)  
+* [ji_destroy_predictor](###释放检测器（必选项）)  
+* [ji_calc_buffer](###算法检测针对图片缓冲（图片必选项）)  
+* [ji_calc_file](###算法检测针对图片文件（图片必选项）)  
+* [ji_calc_video_file](###算法检测针对视频文件（视频必选项）)  
+* [ji_calc_frame](###算法检测针对一帧（视频必选项）)  
 
 ### 初始化（可选项）
 
@@ -111,6 +113,16 @@
 	注     意   : 无
 	
 	int ji_init(int argc, char** argv);  
+
+### 反初始化（可选项）
+	
+	函 数 名 : ji_reinit
+	功能描述    : sdk反初始化函数,主要用于联网license校验线程终止等
+	函数参数    : 无
+	返回参数    : 无 
+	注     意: 无
+	
+	void ji_reinit();
     
 ### 创建检测器（必选项）
 
@@ -232,7 +244,8 @@
 
 ## 模型加密
 
-加密可执行文件
+加密可执行文件  
+
 	目录：/usr/local/ev_sdk/3rd/encrypted_module-master
 	encrypt_module
 

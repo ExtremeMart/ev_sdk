@@ -20,6 +20,7 @@
 		├── clearSrcCode.sh         # 开发完成后但在发布前，用于清除开发者源码等[有开发者补充完善]
         ├── ev_codec                # 混编工具
         ├── ev_license              # 授权工具
+        ├── encrypt_model           # 模型加密工具
         ├── test                    # sdk测试工具，有{../test}项目生成
                                     以下是onKeySdk.sh脚本生成的文件 
         ├── privateKey.pem          # rsa私钥,请妥善保管，发布时请务必删除
@@ -64,7 +65,7 @@
 * 第2步：模型加密，有更新才运行，例如：
 
  `./3rd/encrypted_module-master/encrypt_model 算法模型文件 您的aes密钥(可选参数--32个可见字符)`  
- out file: ./3rd/encrypted_module-master/model_str.hpp, copy this file to "./src" directory .
+ out file: ./model_str.hpp, copy this file to "./src" directory .
  
 ## 编译
 * 运行`./bin/onKeySdk.sh`，一键生成sdk，包括生成算法密钥、编译sdk、编译test

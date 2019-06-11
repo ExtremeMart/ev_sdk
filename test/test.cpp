@@ -6,6 +6,7 @@
 #include <glog/logging.h>
 
 #include "ji.h"
+#include "ji_license.h"
 #include "cJSON.h"
 
 using namespace std;
@@ -26,8 +27,8 @@ int check_filetype(const string &fielname)
         string strExt = fielname.substr(found);
         if (strExt.compare(".mp4") == 0 ||
             strExt.compare(".avi") == 0 ||
-            strExt.compare(".flv") == 0 || 
-            strExt.compare(".h264") == 0)
+            strExt.compare(".mkv") == 0 || 
+            strExt.compare(".flv") == 0)  
         {
             filetype = 1;
         }
@@ -36,7 +37,8 @@ int check_filetype(const string &fielname)
     return filetype;
 }
 
-bool read_license(const string& srcFile, string& license, string& timestamp, int& qps, int& version)
+bool read_license(const string& srcFile, string& license,  string& url, string& activation, 
+                  string& timestamp, int& qps, int& version)
 {
     std::ifstream ifs(srcFile.c_str(),std::ifstream::binary);
     if (!ifs.is_open())
@@ -76,6 +78,18 @@ bool read_license(const string& srcFile, string& license, string& timestamp, int
             break;
         }
         license = sub->valuestring;
+
+        sub = cJSON_GetObjectItem(jsonRoot, "url");
+        if (sub && sub->type == cJSON_String)
+        {
+            url = sub->valuestring;
+        }
+
+        sub = cJSON_GetObjectItem(jsonRoot, "activation");
+        if (sub && sub->type == cJSON_String)
+        {
+            activation = sub->valuestring;
+        }
 
         sub = cJSON_GetObjectItem(jsonRoot, "timestamp");
         if (sub && sub->type == cJSON_String)
@@ -579,7 +593,9 @@ int main(int argc, char *argv[])
     google::InstallFailureSignalHandler();
     google::InstallFailureWriter(&signal_handle);
 
-    LOG(INFO) << "EV_SDK_VERSION: " << EV_SDK_VERSION;
+    LOG(INFO) << "version info:"
+              << "\n\tEV_SDK_VERSION: "     << EV_SDK_VERSION
+              << "\n\tEV_LICENSE_VERSION: " << EV_LICENSE_VERSION;
 
     //parse params
     const char *short_options = "hf:l:i:a:o:r:";  
@@ -691,10 +707,10 @@ int main(int argc, char *argv[])
               << "\n\trepeat:"     << repeats;
 
     //read license & check license
-    string l,ts;
-    int v,qps;
-    v = qps = 0;
-    if (!read_license(strLicense,l,ts,qps,v))
+    string l,u,a,t;
+    int qps,v;
+    qps = v = 0;
+    if (!read_license(strLicense,l,u,a,t,qps,v))
     {
         LOG(ERROR) << "[ERROR] read_license faild.";
         return -1;
@@ -708,14 +724,18 @@ int main(int argc, char *argv[])
     
     LOG(INFO) << "license info:"
               << "\n\tlicense: "     << l
-              << "\n\ttimestamp: "   << ts
+              << "\n\turl: "         << u
+              << "\n\tactivation: "  << a
+              << "\n\ttimestamp: "   << t
               << "\n\tqps: "         << (qps>0?strQps:"")
               << "\n\tversion:"      << v;
 
     int ac = 0;
-    char *av[4];
+    char *av[6];
     av[ac++] = const_cast<char*>(l.c_str());
-    av[ac++] = ts.empty()?NULL:const_cast<char*>(ts.c_str());    
+    av[ac++] = u.empty()?NULL:const_cast<char*>(u.c_str());
+    av[ac++] = a.empty()?NULL:const_cast<char*>(a.c_str());
+    av[ac++] = t.empty()?NULL:const_cast<char*>(t.c_str());
     av[ac++] = qps>0?strQps:NULL;
     av[ac++] = strVersion;
     int iRet = ji_init(ac,av);
@@ -760,5 +780,7 @@ int main(int argc, char *argv[])
     }
 
     ji_destroy_predictor(predictor);
+    ji_reinit();
+    
     return iRet; 
 }
