@@ -233,7 +233,7 @@ private:
             #if 0
             /* 模拟args的处理，json格式 */
             m_cid.clear();
-            handleArgs(args, bi);
+            handleArgsJson(args, bi);
             #endif
         }
     
