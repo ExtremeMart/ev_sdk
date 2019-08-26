@@ -7,7 +7,7 @@ extern "C"
 #endif
 
 /* 版本号,基于license:v10 */
-#define EV_SDK_VERSION  "version:v2.5"
+#define EV_SDK_VERSION  "version:v2.8"
 
 /* 函数返回值定义 */
 #define JISDK_RET_SUCCEED               (0)             //成功

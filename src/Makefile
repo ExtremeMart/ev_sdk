@@ -12,6 +12,7 @@ SRCS:= \
 OBJS:= $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SRCS)))
 
 CPPFLAGS:= \
+	-I/usr/local/include/opencv4 \
 	-I../include \
 	-I../src \
 	-I../3rd/cJSON \
@@ -25,7 +26,8 @@ LDFLAGS:= \
 	-lcrypto -lcurl
 	
 
-LDFLAGS += `pkg-config --libs opencv`	
+#LDFLAGS += `pkg-config --libs opencv`	
+LDFLAGS += -lopencv_videoio -lopencv_highgui -lopencv_imgcodecs -lopencv_core -lopencv_imgproc
 
 CXX_RULE := -std=c++11 -Wall -O3 -fPIC
 

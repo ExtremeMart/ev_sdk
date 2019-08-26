@@ -1,6 +1,7 @@
-#include <fstream>
 #include <getopt.h>
+
 #include <string>
+#include <fstream>
 
 #include <opencv2/opencv.hpp> 
 #include <glog/logging.h>
@@ -27,8 +28,10 @@ int check_filetype(const string &fielname)
         string strExt = fielname.substr(found);
         if (strExt.compare(".mp4") == 0 ||
             strExt.compare(".avi") == 0 ||
-            strExt.compare(".mkv") == 0 || 
-            strExt.compare(".flv") == 0)  
+            strExt.compare(".flv") == 0 || 
+            strExt.compare(".mkv") == 0 ||
+            strExt.compare(".wmv") == 0 ||
+            strExt.compare(".rmvb") == 0)
         {
             filetype = 1;
         }
@@ -183,8 +186,8 @@ void test_for_ji_calc_frame()
             if (iRet == JISDK_RET_SUCCEED)
             {
                 LOG(INFO) << "event info:"
-                     << "\n\tcode: " << event.code
-                     << "\n\tjson: " << event.json;
+                << "\n\tcode: " << event.code
+                << "\n\tjson: " << event.json;
 
                 if (event.code != JISDK_CODE_FAILED)
                 {
@@ -247,7 +250,7 @@ void test_for_ji_calc_frame()
                          if (!vwriter.isOpened())
                          {
                              vwriter.open(strOut,
-                                         /*vcapture.get(cv::CAP_PROP_FOURCC)*/cv::VideoWriter::fourcc('x','2','6','4'),
+                                         /*vcapture.get(cv::CAP_PROP_FOURCC)*/cv::VideoWriter::fourcc('X','2','6','4'),
                                          vcapture.get(cv::CAP_PROP_FPS),
                                          outMat.size());
                              if (!vwriter.isOpened())
@@ -661,13 +664,13 @@ int main(int argc, char *argv[])
 
     //check params
     c = -1;
-    if (strFunction.compare("ji_calc_frame") == 0 || strFunction.compare("1") == 0)
+    if (strFunction.compare("ji_calc_frame") == 0            || strFunction.compare("1") == 0)
         c = 0;
-    else if (strFunction.compare("ji_calc_buffer") == 0   || strFunction.compare("2") == 0)
+    else if (strFunction.compare("ji_calc_buffer") == 0      || strFunction.compare("2") == 0)
         c = 1;
-    else if (strFunction.compare("ji_calc_file")   == 0   || strFunction.compare("3") == 0)
+    else if (strFunction.compare("ji_calc_file") == 0        || strFunction.compare("3") == 0)
         c = 2;
-    else if (strFunction.compare("ji_calc_vido_file") == 0 || strFunction.compare("4") == 0)
+    else if (strFunction.compare("ji_calc_video_file") == 0  || strFunction.compare("4") == 0)
         c = 3;
         
     if (c == -1)

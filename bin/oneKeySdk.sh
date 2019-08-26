@@ -60,7 +60,7 @@ else
    echo "检测到rsa密钥已经存在[privateKey.pem,publickey.pem],若想重新生成,请删除这两个文件,并重新运行该脚本!"
 fi
 
-#将公钥转换为c字符串
+#将公钥转换为c常量字符串
 ./ev_codec -c pubKey.pem ../src/pubKey.hpp && sed -i "s|key|pubKey|g" ../src/pubKey.hpp
 check_error "./ev_codec -c pubKey.pem ../src/pubKey.hpp"
 
@@ -78,6 +78,7 @@ make clean
 make -j
 check_error "make -j"
 
+#进入test路径，编译测试工具
 cd /usr/local/ev_sdk/test/
 make clean
 make -j

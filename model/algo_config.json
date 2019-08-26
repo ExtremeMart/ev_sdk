@@ -1,6 +1,7 @@
 {
-	"show_result":0,
-	"draw_roi_area":0,
-	"draw_result":0,
-	"gpu_id":0
+    "draw_roi_area":1,
+    "draw_result":1,
+    "show_result":0,
+    "gpu_id":0,
+    "threshold_value":0.5
 }

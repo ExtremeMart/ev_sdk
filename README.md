@@ -6,8 +6,8 @@
 * [发布sdk](#发布sdk)
 
 # 简介
-* ev_sdk是极市算法sdk2.0标准的实现示例，一键sdk及专家模式均可以使用该示例作为实现模板；
-* 极市提供的算法docker镜像均提供该实现示例，请根据算法的产品需求选择对应docker镜像;
+* ev_sdk是极视角算法sdk2.0标准的实现示例，一键sdk及专家模式均可以使用该示例作为实现模板；
+* 极视角提供的算法docker镜像均提供该实现示例，请根据算法的产品需求选择对应docker镜像;
 * 请在docker container内开发及调试。
 
 # ev_sdk目录结构
@@ -29,7 +29,7 @@
         ├── license.txt             # 本docker容器的授权码
         └── licenses.manifest	
 		
-    ├── lib             # 发布库文件目录，包括libji.so及其依赖的其它库文件，但不包括镜像本身提供的库(例如：openv,ffmpeg)
+    ├── lib             # 发布库文件目录，包括libji.so及其依赖的其它库文件，但不包括镜像本身提供的库(例如：opencv,ffmpeg)
         ├── libji.so                # ev_sdk最终生成的库文件，有{../src}项目生成
         └──  ...                    # 其它依赖库 
     ├── include         # 发布库头文件目录
@@ -78,7 +78,7 @@
  
 # 测试sdk
 ## 测试
-* 运行`cd /usr/local/ev_sdk/bin && ./onKeyTest.h`,一键自动测试
+* 运行`cd /usr/local/ev_sdk/bin && ./onKeyTest.sh`,一键自动测试
 
 ## 手动测试
  运行`./test --help`,可输出使用帮助如下
