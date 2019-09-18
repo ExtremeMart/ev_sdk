@@ -1,7 +1,8 @@
-# 极市算法SDK说明文档V2.1（C&C++)
+# 极市算法SDK说明文档V2.0（C&C++)
 
 | 版本 |              内容说明               | 编写人 |  更新时间  |
 | :--: | :---------------------------------: | :----: | :--------: |
+| V2.8 | 更新SDK授权，添加反初始化接口 | YuanCheng.Huang | 2019/09/18 |
 | V2.5 | 更新SDK授权，添加反初始化接口 | YuanCheng.Huang | 2019/06/11 |
 | V2.1 | 更新SDK授权，模型加密，添加一键SDK | YuanCheng.Huang | 2019/05/18 |
 | V2.0 | 更新算法接口及参数,SDK授权，模型加密 | YuanCheng.Huang | 2019/03/27 |
@@ -334,7 +335,7 @@ Demo样例
 	./ev_license -l privateKey.pem r.txt license.txt
 	
 	验证license
-	./ev_licnese -c pubKey.pem licnese.txt
+	./ev_licnese -c pubKey.pem license.txt
 	
 	通过显示：license is correct.
 	失败显示：invalid license.
