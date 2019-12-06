@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 
-#include <opencv2/opencv.hpp> 
+#include <opencv2/opencv.hpp>
 #include <glog/logging.h>
 
 #include "ji.h"
@@ -21,14 +21,14 @@ void *predictor = NULL;
 int check_filetype(const string &fielname)
 {
     int filetype = 0; //0:image; 1:video
-    
+
     std::size_t found = fielname.rfind('.');
     if (found!=std::string::npos)
     {
         string strExt = fielname.substr(found);
         if (strExt.compare(".mp4") == 0 ||
             strExt.compare(".avi") == 0 ||
-            strExt.compare(".flv") == 0 || 
+            strExt.compare(".flv") == 0 ||
             strExt.compare(".mkv") == 0 ||
             strExt.compare(".wmv") == 0 ||
             strExt.compare(".rmvb") == 0)
@@ -40,7 +40,7 @@ int check_filetype(const string &fielname)
     return filetype;
 }
 
-bool read_license(const string& srcFile, string& license,  string& url, string& activation, 
+bool read_license(const string& srcFile, string& license,  string& url, string& activation,
                   string& timestamp, int& qps, int& version)
 {
     std::ifstream ifs(srcFile.c_str(),std::ifstream::binary);
@@ -49,7 +49,7 @@ bool read_license(const string& srcFile, string& license,  string& url, string& 
         LOG(ERROR) << "[ERROR] open license file failed.";
         return false;
     }
-    
+
     std::filebuf *fbuf = ifs.rdbuf();
 
     //get file size
@@ -64,9 +64,9 @@ bool read_license(const string& srcFile, string& license,  string& url, string& 
 
     cJSON *jsonRoot = NULL, *sub;
     bool bRet = false;
-    do 
+    do
     {
-        //parse json 
+        //parse json
         jsonRoot = cJSON_Parse(buffer);
         if (jsonRoot == NULL)
         {
@@ -136,19 +136,23 @@ void signal_handle(const char* data, int size)
 void show_help()
 {
     LOG(INFO) << "\n"
-    << "---------------------------------\n"
-    << "usage:\n"
-    << "  -h  --help        show help information\n"
-    << "  -f  --function    test function for \n"
-    << "                    [1.ji_calc_frame,2.ji_calc_buffer,3.ji_calc_file,4.ji_calc_video_file]\n"
-    << "  -l  --license     license file. default: license.txt\n"
-    << "  -i  --infile      source file\n"
-    << "  -a  --args        for example roi\n"
-    << "  -o  --outfile     result file\n"
-    << "  -r  --repeat      number of repetitions. default: 1\n"
-    << "                    <= 0 represents an unlimited number of times\n"
-    << "                    for example: -r 100\n"
-    << "---------------------------------\n";
+              << "---------------------------------\n"
+              << "usage:\n"
+              << "  -h  --help        show help information\n"
+              << "  -f  --function    test function for \n"
+              << "                    1.ji_calc_frame\n"
+              << "                    2.ji_calc_buffer\n"
+              << "                    3.ji_calc_file\n"
+              << "                    4.ji_calc_video_file\n"
+              << "                    5.ji_destroy_predictor\n"
+              << "  -l  --license     license file. default: license.txt\n"
+              << "  -i  --infile      source file\n"
+              << "  -a  --args        for example roi\n"
+              << "  -o  --outfile     result file\n"
+              << "  -r  --repeat      number of repetitions. default: 1\n"
+              << "                    <= 0 represents an unlimited number of times\n"
+              << "                    for example: -r 100\n"
+              << "---------------------------------\n";
 }
 
 void test_for_ji_calc_frame()
@@ -156,7 +160,7 @@ void test_for_ji_calc_frame()
     int filetype = check_filetype(strIn);
 
     /* image-file */
-    if (filetype == 0)    
+    if (filetype == 0)
     {
         JI_CV_FRAME inframe,outframe;
         JI_EVENT event;
@@ -186,8 +190,8 @@ void test_for_ji_calc_frame()
             if (iRet == JISDK_RET_SUCCEED)
             {
                 LOG(INFO) << "event info:"
-                << "\n\tcode: " << event.code
-                << "\n\tjson: " << event.json;
+                          << "\n\tcode: " << event.code
+                          << "\n\tjson: " << event.json;
 
                 if (event.code != JISDK_CODE_FAILED)
                 {
@@ -198,9 +202,9 @@ void test_for_ji_calc_frame()
                     }
                 }
             }
-       } //end_while
+        } //end_while
 
-       return ;
+        return ;
     }
 
 
@@ -218,7 +222,7 @@ void test_for_ji_calc_frame()
             LOG(ERROR) << "[ERROR] cv::VideoCapture,open video file failed, " << strIn;
             break;;
         }
-        
+
         cv::VideoWriter vwriter;
 
         cv::Mat inMat;
@@ -232,36 +236,36 @@ void test_for_ji_calc_frame()
             inframe.step = inMat.step;
             inframe.data = inMat.data;
             inframe.type = inMat.type();
-        
+
             iRet = ji_calc_frame(predictor, &inframe, EMPTY_EQ_NULL(strArgs), &outframe, &event);
             LOG(INFO) << "call ji_calc_frame, return " << iRet;
-            
+
             if (iRet == JISDK_RET_SUCCEED)
             {
                 LOG(INFO) << "event info:"
-                     << "\n\tcode: " << event.code
-                     << "\n\tjson: " << event.json;
+                          << "\n\tcode: " << event.code
+                          << "\n\tjson: " << event.json;
 
-                 if (event.code != JISDK_CODE_FAILED)
-                 {
-                     cv::Mat outMat(outframe.rows,outframe.cols,outframe.type,outframe.data,outframe.step);
-                     if (!strOut.empty())
-                     {
-                         if (!vwriter.isOpened())
-                         {
-                             vwriter.open(strOut,
-                                         /*vcapture.get(cv::CAP_PROP_FOURCC)*/cv::VideoWriter::fourcc('X','2','6','4'),
+                if (event.code != JISDK_CODE_FAILED)
+                {
+                    cv::Mat outMat(outframe.rows,outframe.cols,outframe.type,outframe.data,outframe.step);
+                    if (!strOut.empty())
+                    {
+                        if (!vwriter.isOpened())
+                        {
+                            vwriter.open(strOut,
+                                    /*vcapture.get(cv::CAP_PROP_FOURCC)*/cv::VideoWriter::fourcc('X','2','6','4'),
                                          vcapture.get(cv::CAP_PROP_FPS),
                                          outMat.size());
-                             if (!vwriter.isOpened())
-                             {
-                                 LOG(ERROR) << "[ERROR] cv::VideoWriter,open video file failed, " << strOut;
-                                 break;;
-                             }
-                         }
-                         vwriter.write(outMat);
-                     }
-                 }
+                            if (!vwriter.isOpened())
+                            {
+                                LOG(ERROR) << "[ERROR] cv::VideoWriter,open video file failed, " << strOut;
+                                break;;
+                            }
+                        }
+                        vwriter.write(outMat);
+                    }
+                }
             }
         } // end_while_vcapture.read(inMat)
 
@@ -282,7 +286,7 @@ void test_for_ji_calc_buffer()
     std::filebuf *fbuff = ifs.rdbuf();
     std::size_t size = fbuff->pubseekoff(0,ifs.end,ifs.in);
     fbuff->pubseekpos(0,ifs.in);
-    
+
     char* buffer = new char[size+1];
     fbuff->sgetn(buffer,size);
     ifs.close();
@@ -295,8 +299,8 @@ void test_for_ji_calc_buffer()
         ++count;
         if (repeats == -1 || repeats > 1)
             LOG(INFO) << "repeat: " << count;
-    
-        iRet = ji_calc_buffer(predictor, buffer, size, EMPTY_EQ_NULL(strArgs), 
+
+        iRet = ji_calc_buffer(predictor, buffer, size, EMPTY_EQ_NULL(strArgs),
                               EMPTY_EQ_NULL(strOut), &event);
         LOG(INFO) << "call ji_calc_buffer, return " << iRet;
 
@@ -307,7 +311,7 @@ void test_for_ji_calc_buffer()
                       << "\n\tjson: " << event.json;
         }
     } //end_while
-    
+
     delete [] buffer;
 }
 
@@ -322,17 +326,17 @@ void test_for_ji_calc_file()
         if (repeats == -1 || repeats > 1)
             LOG(INFO) << "repeat: " << count;
 
-        iRet = ji_calc_file(predictor,strIn.c_str(), EMPTY_EQ_NULL(strArgs), 
+        iRet = ji_calc_file(predictor,strIn.c_str(), EMPTY_EQ_NULL(strArgs),
                             EMPTY_EQ_NULL(strOut), &event);
         LOG(INFO) << "call ji_calc_file, return " << iRet;
-        
+
         if (iRet == JISDK_RET_SUCCEED)
         {
             LOG(INFO) << "event info:"
                       << "\n\tcode: " << event.code
                       << "\n\tjson: " << event.json;
         }
-    } //end_while    
+    } //end_while
 }
 
 void test_for_ji_calc_video_file()
@@ -351,7 +355,7 @@ void test_for_ji_calc_video_file()
         if (repeats == -1 || repeats > 1)
             LOG(INFO) << "repeat: " << count;
 
-        iRet = ji_calc_video_file(predictor,strIn.c_str(), EMPTY_EQ_NULL(strArgs), 
+        iRet = ji_calc_video_file(predictor,strIn.c_str(), EMPTY_EQ_NULL(strArgs),
                                   EMPTY_EQ_NULL(strOut), EMPTY_EQ_NULL(strJson));
         LOG(INFO) << "call ji_calc_video_file, return " << iRet;
 
@@ -361,6 +365,70 @@ void test_for_ji_calc_video_file()
                       << "\n\tout_video_file: " << strOut
                       << "\n\tout_json_file: "  << strJson;
         }
+    } //end_while
+}
+
+void test_for_ji_destroy_predictor()
+{
+    int count = 1;
+    while ((repeats == -1) || (count < repeats))
+    {
+        ++count;
+        if (repeats == -1 || repeats > 1)
+            LOG(INFO) << "repeat: " << count;
+
+        if (predictor)
+        {
+            ji_destroy_predictor(predictor);
+            predictor = NULL;
+        }
+
+        predictor = ji_create_predictor(JISDK_PREDICTOR_DEFAULT);
+        if (predictor == NULL)
+        {
+            LOG(ERROR) << "[ERROR] ji_create_predictor faild, return NULL";
+            break;
+        }
+
+        LOG(INFO) << "call ji_create_predictor() success";
+
+
+        int filetype = check_filetype(strIn);
+        JI_CV_FRAME inframe,outframe;
+        JI_EVENT event;
+        cv::Mat inMat = cv::imread(strIn);
+        if (inMat.empty())
+        {
+            LOG(ERROR) << "[ERROR] cv::imread source file failed, " << strIn;
+            return;
+        }
+        inframe.rows = inMat.rows;
+        inframe.cols = inMat.cols;
+        inframe.step = inMat.step;
+        inframe.data = inMat.data;
+        inframe.type = inMat.type();
+
+        int iRet;
+        iRet = ji_calc_frame(predictor, &inframe, "", &outframe, &event);
+        LOG(INFO) << "call ji_calc_frame, return " << iRet;
+
+        if (iRet == JISDK_RET_SUCCEED)
+        {
+            LOG(INFO) << "event info:"
+                      << "\n\tcode: " << event.code
+                      << "\n\tjson: " << event.json;
+
+            if (event.code != JISDK_CODE_FAILED)
+            {
+                if (!strOut.empty())
+                {
+                    cv::Mat outMat(outframe.rows,outframe.cols,outframe.type,outframe.data,outframe.step);
+                    cv::imwrite(strOut,outMat);
+                }
+            }
+        }
+
+
     } //end_while
 }
 
@@ -406,7 +474,7 @@ void cJSON_sample()
     /* add sample */
     cJSON *jsonRoot = cJSON_CreateObject();
 
-    // add "remark"    
+    // add "remark"
     cJSON_AddItemToObjectCS(jsonRoot, "remark", cJSON_CreateString("sample"));
 
     /* begin add "data" array */
@@ -435,7 +503,7 @@ void cJSON_sample()
     cJSON_AddItemToArray(jsonData_object1_child,jsonData_object1_child1);
     cJSON_AddItemToArray(jsonData_object1_child,jsonData_object1_child2);
 
-    cJSON_AddItemToObjectCS(jsonDataObject1,"child", jsonData_object1_child); 
+    cJSON_AddItemToObjectCS(jsonDataObject1,"child", jsonData_object1_child);
     cJSON_AddItemToArray(jsonData,jsonDataObject1);
     /* end add "data.object1" */
 
@@ -448,7 +516,7 @@ void cJSON_sample()
     cJSON_AddItemToArray(jsonData,jsonDataObject2);
     /* end add "data.object2" */
 
-    
+
     /* begin add "data.object3" */
     cJSON *jsonDataObject3 = cJSON_CreateObject();
     cJSON_AddItemToObjectCS(jsonDataObject3,"NO",cJSON_CreateNumber(3));
@@ -471,14 +539,14 @@ void cJSON_sample()
     cJSON_AddItemToArray(jsonData_object3_child,jsonData_object3_child1);
     cJSON_AddItemToArray(jsonData_object3_child,jsonData_object3_child2);
 
-    cJSON_AddItemToObjectCS(jsonDataObject3,"child", jsonData_object3_child);  
+    cJSON_AddItemToObjectCS(jsonDataObject3,"child", jsonData_object3_child);
     cJSON_AddItemToArray(jsonData,jsonDataObject3);
     /* end add "data.object3" */
 
     cJSON_AddItemToObjectCS(jsonRoot,"data",jsonData);
 
     /* print sample */
-    char *buff = cJSON_Print(jsonRoot); 
+    char *buff = cJSON_Print(jsonRoot);
     LOG(INFO) << buff;
     free(buff);
 
@@ -601,23 +669,23 @@ int main(int argc, char *argv[])
               << "\n\tEV_LICENSE_VERSION: " << EV_LICENSE_VERSION;
 
     //parse params
-    const char *short_options = "hf:l:i:a:o:r:";  
-    const struct option long_options[] = {  
-         { "help",     0,   NULL,    'h'},
-         { "function", 1,   NULL,    'f'},  
-         { "license",  1,   NULL,    'l'},
-         { "infile",   1,   NULL,    'i'},  
-         { "args",     1,   NULL,    'a'},  
-         { "outfile",  1,   NULL,    'o'}, 
-         { "repeat",   1,   NULL,    'r'}, 
-         {      0,     0,      0,      0}
-    }; 
+    const char *short_options = "hf:l:i:a:o:r:";
+    const struct option long_options[] = {
+            { "help",     0,   NULL,    'h'},
+            { "function", 1,   NULL,    'f'},
+            { "license",  1,   NULL,    'l'},
+            { "infile",   1,   NULL,    'i'},
+            { "args",     1,   NULL,    'a'},
+            { "outfile",  1,   NULL,    'o'},
+            { "repeat",   1,   NULL,    'r'},
+            {      0,     0,      0,      0}
+    };
 
     bool bShowHelp = false;
     int c;
-    int option_index = 0;    
+    int option_index = 0;
     do
-    {    
+    {
         c = getopt_long(argc, argv, short_options,long_options,&option_index);
         if (c == -1) break;
 
@@ -672,7 +740,9 @@ int main(int argc, char *argv[])
         c = 2;
     else if (strFunction.compare("ji_calc_video_file") == 0  || strFunction.compare("4") == 0)
         c = 3;
-        
+    else if (strFunction.compare("ji_destroy_predictor") == 0 || strFunction.compare("5") == 0)
+        c = 4;
+
     if (c == -1)
     {
         LOG(ERROR) << "[ERROR] invalid function.";
@@ -684,8 +754,8 @@ int main(int argc, char *argv[])
     {
         strLicense = "license.txt";
     }
-    
-    if (strIn.empty())
+
+    if (c !=4 && strIn.empty())
     {
         LOG(ERROR) << "[ERROR] no infile.";
         show_help();
@@ -693,20 +763,21 @@ int main(int argc, char *argv[])
     }
 
     if (repeats <= 0) repeats = -1;
-    
+
     //print params
-    static const string cs_function[4] = {
-        "1.ji_calc_frame",
-        "2.ji_calc_buffer",
-        "3.ji_calc_file",
-        "4.ji_calc_video_file"
+    static const string cs_function[] = {
+            "1.ji_calc_frame",
+            "2.ji_calc_buffer",
+            "3.ji_calc_file",
+            "4.ji_calc_video_file",
+            "5.ji_destroy_predictor"
     };
-    LOG(INFO) << "run params info:" 
+    LOG(INFO) << "run params info:"
               << "\n\tfuction: "   << cs_function[c]
               << "\n\tlicense: "   << strLicense
-              << "\n\tinfile: "    << strIn 
-              << "\n\targs: "      << strArgs 
-              << "\n\toutfile: "   << strOut      
+              << "\n\tinfile: "    << strIn
+              << "\n\targs: "      << strArgs
+              << "\n\toutfile: "   << strOut
               << "\n\trepeat:"     << repeats;
 
     //read license & check license
@@ -721,10 +792,10 @@ int main(int argc, char *argv[])
 
     char strQps[64] = {0};
     sprintf(strQps,"%d",qps);
-    
+
     char strVersion[64] = {0};
     sprintf(strVersion,"%d",v);
-    
+
     LOG(INFO) << "license info:"
               << "\n\tlicense: "     << l
               << "\n\turl: "         << u
@@ -742,7 +813,7 @@ int main(int argc, char *argv[])
     av[ac++] = qps>0?strQps:NULL;
     av[ac++] = strVersion;
     int iRet = ji_init(ac,av);
-    if (iRet != JISDK_RET_SUCCEED) 
+    if (iRet != JISDK_RET_SUCCEED)
     {
         LOG(ERROR) << "[ERROR] ji_init faild, return " << iRet;
         return -1;
@@ -756,7 +827,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    //test 
+    //test
     switch (c)
     {
         //ji_calc_frame
@@ -778,11 +849,20 @@ int main(int argc, char *argv[])
         case 3:
             test_for_ji_calc_video_file();
             break;
-        
+
+            //ji_destroy_predictor
+        case 4:
+            test_for_ji_destroy_predictor();
+            break;
+
         default: break;
     }
 
-    ji_destroy_predictor(predictor);
+    if (predictor)
+    {
+        ji_destroy_predictor(predictor);
+        predictor = NULL;
+    }
     ji_reinit();
     
     return iRet; 

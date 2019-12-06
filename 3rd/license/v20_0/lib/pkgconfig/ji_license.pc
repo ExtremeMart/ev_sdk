@@ -1,0 +1,9 @@
+Name: ji_license
+Description: 
+Version: 20.0
+Requires: 
+prefix=/usr/local/ev_sdk/3rd/license/v20_0
+includedir=${prefix}/include/
+libdir=${prefix}/lib
+Libs: -L${libdir} -lji_license -lji_license_impl
+Cflags: -I${includedir}
