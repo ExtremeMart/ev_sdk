@@ -165,6 +165,8 @@ void test_for_ji_calc_frame()
         JI_CV_FRAME inframe,outframe;
         JI_EVENT event;
         cv::Mat inMat = cv::imread(strIn);
+        cv::Mat inMatCopy;
+        inMat.copyTo(inMatCopy);
         if (inMat.empty())
         {
             LOG(ERROR) << "[ERROR] cv::imread source file failed, " << strIn;
@@ -203,6 +205,39 @@ void test_for_ji_calc_frame()
                 }
             }
         } //end_while
+
+        // Check input image integrity
+        cv::Mat diff = inMat != inMatCopy;
+        bool isInMatModified = (inMatCopy.dims != inMat.dims) &&
+                (inMatCopy.size() != inMat.size()) &&
+                (inMatCopy.data != inMat.data);
+        if (!isInMatModified) {
+            int cols = inMatCopy.cols;
+            int rows = inMatCopy.rows;
+            int elemSize = inMatCopy.elemSize();
+            for (int i = 0; i < rows; ++i) {
+                for (int j = 0; j < cols; ++j) {
+                    for (int k = 0; k < elemSize; ++k) {
+                        int idx = cols * elemSize * i + elemSize * j + k;
+                        if (inMatCopy.data[idx] != inMat.data[idx]) {
+                            isInMatModified = true;
+                            break;
+                        }
+                    }
+                    if (!isInMatModified) {
+                        break;
+                    }
+                }
+                if (!isInMatModified) {
+                    break;
+                }
+            }
+        }
+        if (isInMatModified) {
+            LOG(ERROR) << "Input image modified!";
+        } else {
+            LOG(INFO) << "Input image not modfied.";
+        }
 
         return ;
     }
