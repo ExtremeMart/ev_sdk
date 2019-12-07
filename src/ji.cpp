@@ -39,15 +39,21 @@ cv::Mat outputFrame;        // 用于存储算法处理后的输出图像，根�
 char *jsonResult = nullptr; // 用于存储算法处理后输出到JI_EVENT的json字符串，根据ji.h的接口规范，接口实现需要负责释放该资源
 
 // 算法与画图的可配置参数及其默认值
-double nms = 0.6;
-double thresh = 0.5;
-double hierThresh = 0.5;
+typedef struct {
+    // 算法配置可选的配置参数
+    double nms;
+    double thresh;
+    double hierThresh;
+} ALGO_CONFIG_TYPE;
+
+std::map<std::string, ALGO_CONFIG_TYPE> mAlgoConfigs;   // 针对不同的cid（即camera id）所对应的算法配置
+ALGO_CONFIG_TYPE mAlgoConfigDefault = {0.6, 0.5, 0.5};     // 默认的算法配置，当没有传入cid时使用
 
 int gpuID = 0;  // 算法使用的GPU ID，算法必须实现支持从外部设置GPU ID的功能
-bool drawROIArea = false;           // 是否画ROI
+bool drawROIArea = false;   // 是否画ROI
 COLOR_BGRA_TYPE roiColor = {120, 120, 120, 1.0f};  // ROI框的颜色
 int roiLineThickness = 4;   // ROI框的粗细
-bool roiFill = false;   // 是否使用颜色填充ROI区域
+bool roiFill = false;       // 是否使用颜色填充ROI区域
 bool drawResult = true;         // 是否画检测框
 bool drawConfidence = false;    // 是否画置信度
 int dogRectLineThickness = 4;   // 目标框粗细
@@ -142,17 +148,17 @@ void onInFrameSizeChanged(int newWidth, int newHeight) {
  * 解析json格式的配置参数
  *
  * @param[in] configStr json格式的配置参数字符串
- * @return 成功解析true，否则返回false
+ * @return 当前参数解析后，生成的算法相关配置参数
  */
-bool parseAndUpdateArgs(const char *confStr) {
+ALGO_CONFIG_TYPE parseAndUpdateArgs(const char *confStr) {
     if (confStr == nullptr) {
-        return false;
+        return mAlgoConfigDefault;
     }
 
     cJSON *confObj = cJSON_Parse(confStr);
     if (confObj == nullptr) {
         LOG(ERROR) << "Failed parsing `" << confStr << "`";
-        return false;
+        return mAlgoConfigDefault;
     }
     cJSON *gpuObj = cJSON_GetObjectItem(confObj, "gpu_id");
     if (gpuObj != nullptr && gpuObj->type == cJSON_Number) {
@@ -200,10 +206,7 @@ bool parseAndUpdateArgs(const char *confStr) {
     if (drawConfObj != nullptr && cJSON_IsBool(drawConfObj)) {
         drawConfidence = drawConfObj->valueint;
     }
-    cJSON *threshObj = cJSON_GetObjectItem(confObj, "thresh");
-    if (threshObj != nullptr && threshObj->type == cJSON_Number) {
-        thresh = threshObj->valuedouble;
-    }
+
     cJSON *markTextObj = cJSON_GetObjectItem(confObj, "mark_text");
     if (markTextObj != nullptr && markTextObj->type == cJSON_String) {
         dogRectText = markTextObj->valuestring;
@@ -260,8 +263,29 @@ bool parseAndUpdateArgs(const char *confStr) {
         }
     }
 
+    // 针对不同的cid获取算法配置参数，如果没有cid参数，就使用默认的配置参数
+    ALGO_CONFIG_TYPE algoConfig{0.6, 0.5, 0.5};
+    cJSON *threshObj = cJSON_GetObjectItem(confObj, "thresh");
+    if (threshObj != nullptr && threshObj->type == cJSON_Number) {
+        algoConfig.thresh = threshObj->valuedouble;     // 获取默认的阈值
+    }
+    cJSON *cidObj = cJSON_GetObjectItem(confObj, "cid");
+    if (cidObj != nullptr && cidObj->type == cJSON_Number) {
+        // 如果能够找到cid，当前配置就针对对应的cid进行更改
+        if (mAlgoConfigs.empty()) {
+            mAlgoConfigs.emplace(std::make_pair(cidObj->valuestring, algoConfig));
+        } else if (mAlgoConfigs.find(cidObj->valuestring) != mAlgoConfigs.end()) {
+            mAlgoConfigs[cidObj->valuestring] = algoConfig;
+        } else {
+            mAlgoConfigs.emplace(std::make_pair(cidObj->valuestring, algoConfig));
+        }
+    } else {
+        // 如果没有找到cid，就改变默认的配置
+        mAlgoConfigDefault = algoConfig;
+    }
+
     cJSON_Delete(confObj);
-    return true;
+    return algoConfig;
 }
 
 /**
@@ -303,8 +327,8 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
      * 解析参数并更新，根据接口规范标准，接口必须支持配置文件/usr/local/ev_sdk/model/algo_config.json内参数的实时更新功能
      * （即通过ji_calc_*等接口传入）
      */
-    parseAndUpdateArgs(args);
-    detector->setThresh(thresh);
+    ALGO_CONFIG_TYPE algoConfig = parseAndUpdateArgs(args);
+    detector->setThresh(algoConfig.thresh);
 
     // 针对每个ROI进行算法处理
     std::vector<SampleDetector::Object> detectedObjects;
@@ -489,7 +513,7 @@ void *ji_create_predictor(int pdtype) {
     }
 #endif
 
-    auto *detector = new SampleDetector(thresh, nms, hierThresh, gpuID);
+    auto *detector = new SampleDetector(mAlgoConfigDefault.thresh, mAlgoConfigDefault.nms, mAlgoConfigDefault.hierThresh, gpuID);
     char *decryptedModelStr = nullptr;
 
 #ifdef ENABLE_JI_MODEL_ENCRYPTION
