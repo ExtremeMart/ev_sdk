@@ -361,7 +361,7 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
         }
     }
 
-    // 此处示例业务逻辑：当算法到有`dog`时，就报警
+    // 此处示例业务逻辑：当算法检测到有`dog`时，就报警
     bool isNeedAlert = false;   // 是否需要报警
     std::vector<SampleDetector::Object> dogs;   // 检测到的`dog`
 

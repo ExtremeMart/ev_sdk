@@ -74,7 +74,7 @@ make install
    # 生成参考文件
    /usr/local/ev_sdk/3rd/license/v20_0/bin/ev_license -r reference.txt
    # 生成授权文件
-   /usr/locak/ev_sdk/3rd/license/v20_0/bin/ev_license -l privateKey.pem reference.txt license.txt
+   /usr/local/ev_sdk/3rd/license/v20_0/bin/ev_license -l privateKey.pem reference.txt license.txt
    ```
 
 2. 使用`test-ji-api`测试`ji_calc_frame`接口，测试添加了一个`ROI`参数
