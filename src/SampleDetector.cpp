@@ -10,6 +10,8 @@
 #include <cJSON.h>
 #include "SampleDetector.hpp"
 #include "ji_utils.h"
+#include <cuda.h>
+#include <cuda_runtime_api.h>
 
 SampleDetector::SampleDetector(double thresh, double nms, double hierThresh, int gpuID):
     mNetworkPtr(NULL), mNms(nms), mThresh(thresh), mHIERThresh(hierThresh), mGPUID(gpuID) {
@@ -22,6 +24,11 @@ int SampleDetector::init(char *namesFile, const char *modelCfgStr, char *weights
     if (namesFile == nullptr || modelCfgStr == nullptr || weightsFile == nullptr) {
         LOG(ERROR) << "Invalid init args!";
         return ERROR_INVALID_INIT_ARGS;
+    }
+    if (mGPUID > 0) {
+        cudaSetDevice(mGPUID);
+    } else {
+        LOG(ERROR) << "Invalid gpu id:" << mGPUID;
     }
 
     LOG(INFO) << "Loading model...";
