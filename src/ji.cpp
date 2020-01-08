@@ -165,7 +165,7 @@ ALGO_CONFIG_TYPE parseAndUpdateArgs(const char *confStr) {
         gpuID = gpuObj->valueint;
     }
     cJSON *drawROIObj = cJSON_GetObjectItem(confObj, "draw_roi_area");
-    if (drawROIObj != nullptr && cJSON_IsBool(drawROIObj)) {
+    if (drawROIObj != nullptr && (drawROIObj->type == cJSON_True || drawROIObj->type == cJSON_False)) {
         drawROIArea = drawROIObj->valueint;
     }
     if (drawROIArea) {
@@ -178,7 +178,7 @@ ALGO_CONFIG_TYPE parseAndUpdateArgs(const char *confStr) {
             roiLineThickness = roiThicknessObj->valueint;
         }
         cJSON *roiFillObj = cJSON_GetObjectItem(confObj, "roi_fill");
-        if (roiThicknessObj != nullptr && cJSON_IsBool(roiFillObj)) {
+        if (roiThicknessObj != nullptr && (roiFillObj->type == cJSON_True || roiFillObj->type == cJSON_False)) {
             roiFill = roiFillObj->valueint;
         }
 
@@ -199,11 +199,11 @@ ALGO_CONFIG_TYPE parseAndUpdateArgs(const char *confStr) {
         }
     }
     cJSON *drawResultObj = cJSON_GetObjectItem(confObj, "draw_result");
-    if (drawResultObj != nullptr && cJSON_IsBool(drawResultObj)) {
+    if (drawResultObj != nullptr && (drawResultObj->type == cJSON_True || drawResultObj->type == cJSON_False)) {
         drawResult = drawResultObj->valueint;
     }
     cJSON *drawConfObj = cJSON_GetObjectItem(confObj, "draw_confidence");
-    if (drawConfObj != nullptr && cJSON_IsBool(drawConfObj)) {
+    if (drawConfObj != nullptr && (drawConfObj->type == cJSON_True || drawConfObj->type == cJSON_False)) {
         drawConfidence = drawConfObj->valueint;
     }
 
