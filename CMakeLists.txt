@@ -10,12 +10,10 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 # 使用pkg-config查找必要的依赖包
 find_package(OpenCV REQUIRED)
 find_library(glog REQUIRED)
-set(ENV{PKG_CONFIG_PATH} "/usr/local/ev_sdk/3rd/ev_encrypt_module/lib/pkgconfig:/usr/local/ev_sdk/3rd/license/v20_0/lib/pkgconfig:/usr/local/cuda/pkgconfig/:ENV{PKG_CONFIG_PATH}")
+set(ENV{PKG_CONFIG_PATH} "/usr/local/ev_sdk/3rd/ev_encrypt_module/lib/pkgconfig:/usr/local/ev_sdk/3rd/license/v20_0/lib/pkgconfig:ENV{PKG_CONFIG_PATH}")
 find_package(PkgConfig REQUIRED)
 pkg_search_module(EV_ENCRYPT_MODULE REQUIRED ev_encrypt_module)
 pkg_search_module(JI_LICENSE REQUIRED ji_license)
-pkg_search_module(CUDA REQUIRED cuda-10.0)
-message(${CUDA_CFLAGS})
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/3rd/cJSON)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/3rd/wkt_parser)
@@ -31,8 +29,7 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
         PUBLIC ${JI_LICENSE_INCLUDE_DIRS}
         PUBLIC ${EV_ENCRYPT_MODULE_INCLUDE_DIRS}
-        PUBLIC "/usr/local/ev_sdk/3rd/darknet/include"
-        PUBLIC ${CUDA_INCLUDE_DIRS})
+        PUBLIC "/usr/local/ev_sdk/3rd/darknet/include")
 target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
         glog
@@ -41,7 +38,7 @@ target_link_libraries(${PROJECT_NAME}
         cjson
         WKTParser
         "/usr/local/ev_sdk/3rd/darknet/lib/libdarknet.so"
-)
+        )
 
 # 安装SampleDetector所依赖的libdarknet.so, 请在此处将自己依赖的库安装到/usr/local/ev_sdk/lib下
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rd/darknet/lib/libdarknet.so DESTINATION lib)
@@ -57,7 +54,7 @@ target_link_libraries(test-ji-api
         cjson
         glog
         ${PROJECT_NAME}
-)
+        )
 # Install libji_license_impl.so
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rd/license/v20_0/lib/libji_license_impl.so DESTINATION lib)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rd/license/v20_0/lib/license_lib.sig DESTINATION lib)
