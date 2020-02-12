@@ -19,6 +19,7 @@ message(${CUDA_CFLAGS})
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/3rd/cJSON)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/3rd/wkt_parser)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:/usr/local/ev_sdk/lib")
 
 # 编译libji.so
 list(APPEND libji_SOURCES
