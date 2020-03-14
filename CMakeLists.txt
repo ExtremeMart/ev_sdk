@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(ji)
-if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
-    message(STATUS "optional:-std=c++11")
-endif(CMAKE_COMPILER_IS_GNUCXX)
+
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INSTALL_PREFIX "/usr/local/ev_sdk")
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
@@ -22,8 +20,7 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:/usr/local/ev_sdk/lib")
 # 编译libji.so
 list(APPEND libji_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ji.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/SampleDetector.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ji_utils.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/SampleDetector.cpp)
 add_library (${PROJECT_NAME} SHARED ${libji_SOURCES})
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${OpenCV_INCLUDE_DIR}

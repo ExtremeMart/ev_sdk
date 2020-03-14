@@ -1,3 +1,5 @@
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS "-fext-numeric-literals ${CMAKE_CXX_FLAGS}")
 find_package(OpenCV REQUIRED)
 find_package(Boost REQUIRED)
 
