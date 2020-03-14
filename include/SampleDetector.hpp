@@ -23,7 +23,7 @@ public:
         cv::Rect rect;
     } Object;
 
-    SampleDetector(double thresh, double nms, double hierThresh, int gpuID);
+    SampleDetector(double thresh, double nms, double hierThresh);
 
     /**
      * 初始化模型
@@ -77,8 +77,6 @@ private:
     double mNms = 0.6;
 
     size_t mClasses = 0;
-
-    int mGPUID = 0;
 };
 
 #endif //JI_SAMPLEDETECTOR_HPP

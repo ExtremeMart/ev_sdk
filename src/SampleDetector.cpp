@@ -11,11 +11,10 @@
 #include "SampleDetector.hpp"
 #include "ji_utils.h"
 
-SampleDetector::SampleDetector(double thresh, double nms, double hierThresh, int gpuID):
-    mNetworkPtr(NULL), mNms(nms), mThresh(thresh), mHIERThresh(hierThresh), mGPUID(gpuID) {
-
+SampleDetector::SampleDetector(double thresh, double nms, double hierThresh):
+    mNetworkPtr(NULL), mNms(nms), mThresh(thresh), mHIERThresh(hierThresh) {
     LOG(INFO) << "Current config: nms:" << mNms << ", thresh:" << mThresh
-            << ", HIERThresh:" << mHIERThresh << ", GPU ID:" << mGPUID;
+            << ", HIERThresh:" << mHIERThresh;
 }
 
 int SampleDetector::init(char *namesFile, const char *modelCfgStr, char *weightsFile) {
@@ -37,7 +36,6 @@ int SampleDetector::init(char *namesFile, const char *modelCfgStr, char *weights
 
     mNetworkPtr = load_network_from_string(modelCfgStr, weightsFile, 0);
     set_batch_network(mNetworkPtr, 1);
-    mNetworkPtr->gpu_index = mGPUID;
     srand(2222222);
 
     LOG(INFO) << "Done.";

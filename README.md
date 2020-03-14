@@ -291,17 +291,16 @@ make install
 
    - `EV_SDK`的实现需要使用标准[JSON](https://www.json.cn/wiki.html)格式的配置文件，所有算法与`SDK`可配置参数**必须**存放在统一的配置文件：`/usr/local/ev_sdk/config/algo_config.json`中；
    - 配置文件中必须实现的参数项：
-     - `gpu_id`：整型，`-1`表示不使用GPU，大于`0`表示表示算法使用的GPU ID，算法必须能够根据GPU ID来使用特定的GPU；
      - `draw_roi_area`：`true`或者`false`，是否在输出图中绘制`roi`分析区域；
      - `roi_line_thickness`：ROI区域的边框粗细；
      - `roi_fill`：是否使用颜色填充ROI区域；
      - `roi_color`：`roi`框的颜色，以BGRA表示的数组，如`[0, 255, 0, 0]`，参考[model/README.md](model/README.md)；
      - `roi`：针对图片的感兴趣区域进行分析，如果没有此参数或者此参数解析错误，则roi默认值为整张图片区域；
-     - ` thresh`：算法阈值，需要有可以调整算法灵敏度、召回率、精确率的阈值参数，如果算法配置项有多个参数，请自行扩展，所有与算法效果相关并且可以变动的参数**必须**在`/usr/local/ev_sdk/config/README.md`中提供详细的配置方法和说明（包括类型、取值范围、建议值、默认值、对算法效果的影响等）；
-     - ` draw_result`：`true`或者`false`，是否绘制分析结果，比如示例程序中，如果检测到狗，是否将检测框和文字画在输出图中；
+     - `thresh`：算法阈值，需要有可以调整算法灵敏度、召回率、精确率的阈值参数，如果算法配置项有多个参数，请自行扩展，所有与算法效果相关并且可以变动的参数**必须**在`/usr/local/ev_sdk/config/README.md`中提供详细的配置方法和说明（包括类型、取值范围、建议值、默认值、对算法效果的影响等）；
+     - `draw_result`：`true`或者`false`，是否绘制分析结果，比如示例程序中，如果检测到狗，是否将检测框和文字画在输出图中；
      - `draw_confidence`：`true`或者`false`，是否将置信度画在检测框顶部，小数点后保留两位；
      - 所有`json`内的键名称必须是小写字母，并且单词间以下划线分隔，如上面几个示例。
-   - **必须支持参数实时更新**。除了`gpu_id`等必须在算法初始化时才能够更新的参数外，所有`/usr/local/ev_sdk/config/algo_config.json`内的可配置参数必须支持能够在调用`ji_calc_frame`、`ji_calc_buffer`、`ji_calc_file`、`ji_calc_video_file`四个接口时，进行实时更新。也就是必须要在`ji_calc_*`等接口的`args`参数中，加入这些可配置项。
+   - **必须支持参数实时更新**。所有`/usr/local/ev_sdk/config/algo_config.json`内的可配置参数必须支持能够在调用`ji_calc_frame`、`ji_calc_buffer`、`ji_calc_file`、`ji_calc_video_file`四个接口时，进行实时更新。也就是必须要在`ji_calc_*`等接口的`args`参数中，加入这些可配置项。
 
 5. 算法输出规范要求
 

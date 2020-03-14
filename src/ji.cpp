@@ -49,7 +49,6 @@ typedef struct {
 std::map<std::string, ALGO_CONFIG_TYPE> mAlgoConfigs;   // 针对不同的cid（即camera id）所对应的算法配置
 ALGO_CONFIG_TYPE mAlgoConfigDefault = {0.6, 0.5, 0.5};     // 默认的算法配置，当没有传入cid时使用
 
-int gpuID = 0;  // 算法使用的GPU ID，算法必须实现支持从外部设置GPU ID的功能
 bool drawROIArea = false;   // 是否画ROI
 COLOR_BGRA_TYPE roiColor = {120, 120, 120, 1.0f};  // ROI框的颜色
 int roiLineThickness = 4;   // ROI框的粗细
@@ -159,10 +158,6 @@ ALGO_CONFIG_TYPE parseAndUpdateArgs(const char *confStr) {
     if (confObj == nullptr) {
         LOG(ERROR) << "Failed parsing `" << confStr << "`";
         return mAlgoConfigDefault;
-    }
-    cJSON *gpuObj = cJSON_GetObjectItem(confObj, "gpu_id");
-    if (gpuObj != nullptr && gpuObj->type == cJSON_Number) {
-        gpuID = gpuObj->valueint;
     }
     cJSON *drawROIObj = cJSON_GetObjectItem(confObj, "draw_roi_area");
     if (drawROIObj != nullptr && (drawROIObj->type == cJSON_True || drawROIObj->type == cJSON_False)) {
@@ -513,7 +508,7 @@ void *ji_create_predictor(int pdtype) {
     }
 #endif
 
-    auto *detector = new SampleDetector(mAlgoConfigDefault.thresh, mAlgoConfigDefault.nms, mAlgoConfigDefault.hierThresh, gpuID);
+    auto *detector = new SampleDetector(mAlgoConfigDefault.thresh, mAlgoConfigDefault.nms, mAlgoConfigDefault.hierThresh);
     char *decryptedModelStr = nullptr;
 
 #ifdef ENABLE_JI_MODEL_ENCRYPTION
