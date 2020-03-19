@@ -299,6 +299,7 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
         return JISDK_RET_FAILED;
     }
 
+#ifdef ENABLE_JI_AUTHORIZATION
     // 检查授权，统计QPS
     int ret = ji_check_expire();
     if (ret != JISDK_RET_SUCCEED) {
@@ -313,7 +314,7 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
                 return JISDK_RET_UNAUTHORIZED;
         }
     }
-
+#endif
     if (currentInFrameSize.width != inFrame.cols || currentInFrameSize.height != inFrame.rows) {
         onInFrameSizeChanged(inFrame.cols, inFrame.rows);
     }
