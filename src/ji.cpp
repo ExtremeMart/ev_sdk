@@ -472,22 +472,6 @@ int ji_init(int argc, char **argv) {
         return authCode;
     }
 
-    // 从统一的配置文件读取配置参数，SDK实现必须支持从这个统一的配置文件中读取算法&业务逻辑相关的配置参数
-    const char *configFile = "/usr/local/ev_sdk/config/algo_config.json";
-    LOG(INFO) << "Parsing configuration file: " << configFile;
-
-    std::ifstream confIfs(configFile);
-    if (confIfs.is_open()) {
-        size_t len = getFileLen(confIfs);
-        char *confStr = new char[len + 1];
-        confIfs.read(confStr, len);
-        confStr[len] = '\0';
-
-        parseAndUpdateArgs(confStr);
-        delete[] confStr;
-        confIfs.close();
-    }
-
     return authCode;
 }
 
@@ -508,6 +492,22 @@ void *ji_create_predictor(int pdtype) {
         return nullptr;
     }
 #endif
+
+    // 从统一的配置文件读取配置参数，SDK实现必须支持从这个统一的配置文件中读取算法&业务逻辑相关的配置参数
+    const char *configFile = "/usr/local/ev_sdk/config/algo_config.json";
+    LOG(INFO) << "Parsing configuration file: " << configFile;
+
+    std::ifstream confIfs(configFile);
+    if (confIfs.is_open()) {
+        size_t len = getFileLen(confIfs);
+        char *confStr = new char[len + 1];
+        confIfs.read(confStr, len);
+        confStr[len] = '\0';
+
+        parseAndUpdateArgs(confStr);
+        delete[] confStr;
+        confIfs.close();
+    }
 
     auto *detector = new SampleDetector(mAlgoConfigDefault.thresh, mAlgoConfigDefault.nms, mAlgoConfigDefault.hierThresh);
     char *decryptedModelStr = nullptr;
