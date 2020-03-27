@@ -572,16 +572,15 @@ int ji_calc_frame(void *predictor, const JI_CV_FRAME *inFrame, const char *args,
     if (inMat.empty()) {
         return JISDK_RET_FAILED;
     }
-    cv::Mat outMat;
-    int processRet = processMat(detector, inMat, args, outMat, *event);
+    int processRet = processMat(detector, inMat, args, outputFrame, *event);
 
     if (processRet == JISDK_RET_SUCCEED) {
-        if ((event->code != JISDK_CODE_FAILED) && (!outMat.empty()) && (outFrame)) {
-            outFrame->rows = outMat.rows;
-            outFrame->cols = outMat.cols;
-            outFrame->type = outMat.type();
-            outFrame->data = outMat.data;
-            outFrame->step = outMat.step;
+        if ((event->code != JISDK_CODE_FAILED) && (!outputFrame.empty()) && (outFrame)) {
+            outFrame->rows = outputFrame.rows;
+            outFrame->cols = outputFrame.cols;
+            outFrame->type = outputFrame.type();
+            outFrame->data = outputFrame.data;
+            outFrame->step = outputFrame.step;
         }
     }
     return processRet;
