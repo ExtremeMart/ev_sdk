@@ -47,7 +47,7 @@ typedef struct {
 } ALGO_CONFIG_TYPE;
 
 std::map<std::string, ALGO_CONFIG_TYPE> mAlgoConfigs;   // 针对不同的cid（即camera id）所对应的算法配置
-ALGO_CONFIG_TYPE mAlgoConfigDefault = {0.6, 0.5, 0.5};     // 默认的算法配置，当没有传入cid时使用
+ALGO_CONFIG_TYPE mAlgoConfigDefault = {0.6, 0.5, 0.5};     // 默认的算法配置
 
 bool drawROIArea = false;   // 是否画ROI
 COLOR_BGRA_TYPE roiColor = {120, 120, 120, 1.0f};  // ROI框的颜色
@@ -259,24 +259,25 @@ ALGO_CONFIG_TYPE parseAndUpdateArgs(const char *confStr) {
     }
 
     // 针对不同的cid获取算法配置参数，如果没有cid参数，就使用默认的配置参数
-    ALGO_CONFIG_TYPE algoConfig{0.6, 0.5, 0.5};
+    ALGO_CONFIG_TYPE algoConfig{mAlgoConfigDefault.nms, mAlgoConfigDefault.thresh, mAlgoConfigDefault.hierThresh};
+    bool isNeedUpdateThresh = false;
+    float newThresh = algoConfig.thresh;
     cJSON *threshObj = cJSON_GetObjectItem(confObj, "thresh");
     if (threshObj != nullptr && threshObj->type == cJSON_Number) {
-        algoConfig.thresh = threshObj->valuedouble;     // 获取默认的阈值
+        newThresh = threshObj->valuedouble;     // 获取默认的阈值
+        isNeedUpdateThresh = true;
+        algoConfig.thresh = newThresh;
     }
     cJSON *cidObj = cJSON_GetObjectItem(confObj, "cid");
     if (cidObj != nullptr && cidObj->type == cJSON_Number) {
         // 如果能够找到cid，当前配置就针对对应的cid进行更改
-        if (mAlgoConfigs.empty()) {
-            mAlgoConfigs.emplace(std::make_pair(cidObj->valuestring, algoConfig));
-        } else if (mAlgoConfigs.find(cidObj->valuestring) != mAlgoConfigs.end()) {
-            mAlgoConfigs[cidObj->valuestring] = algoConfig;
-        } else {
-            mAlgoConfigs.emplace(std::make_pair(cidObj->valuestring, algoConfig));
+        if (mAlgoConfigs.find(cidObj->valuestring) == mAlgoConfigs.end()) {
+            mAlgoConfigs.emplace(std::make_pair(cidObj->valuestring, mAlgoConfigDefault));
         }
-    } else {
-        // 如果没有找到cid，就改变默认的配置
-        mAlgoConfigDefault = algoConfig;
+        if (isNeedUpdateThresh) {
+            mAlgoConfigs[cidObj->valuestring].thresh = newThresh;
+        }
+        algoConfig = mAlgoConfigs[cidObj->valuestring];
     }
 
     cJSON_Delete(confObj);
@@ -497,6 +498,7 @@ void *ji_create_predictor(int pdtype) {
     const char *configFile = "/usr/local/ev_sdk/config/algo_config.json";
     LOG(INFO) << "Parsing configuration file: " << configFile;
 
+    ALGO_CONFIG_TYPE algoConfig{mAlgoConfigDefault.nms, mAlgoConfigDefault.thresh, mAlgoConfigDefault.hierThresh};
     std::ifstream confIfs(configFile);
     if (confIfs.is_open()) {
         size_t len = getFileLen(confIfs);
@@ -504,12 +506,13 @@ void *ji_create_predictor(int pdtype) {
         confIfs.read(confStr, len);
         confStr[len] = '\0';
 
-        parseAndUpdateArgs(confStr);
+        algoConfig = parseAndUpdateArgs(confStr);
+        mAlgoConfigDefault = algoConfig;
         delete[] confStr;
         confIfs.close();
     }
 
-    auto *detector = new SampleDetector(mAlgoConfigDefault.thresh, mAlgoConfigDefault.nms, mAlgoConfigDefault.hierThresh);
+    auto *detector = new SampleDetector(algoConfig.thresh, algoConfig.nms, algoConfig.hierThresh);
     char *decryptedModelStr = nullptr;
 
 #ifdef ENABLE_JI_MODEL_ENCRYPTION
