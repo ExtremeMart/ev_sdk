@@ -1,6 +1,6 @@
 Name: ji_license
 Description: 
-Version: 20.0
+Version: 20.0.1
 Requires: 
 prefix=/usr/local/ev_sdk/3rd/license/v20_0
 includedir=${prefix}/include/
