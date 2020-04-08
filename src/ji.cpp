@@ -20,6 +20,7 @@
 #include "pubKey.hpp"
 #include "model_str.hpp"
 #include "SampleDetector.hpp"
+#include "Configuration.hpp"
 
 #define JSON_ALERT_FLAG_KEY ("alert_flag")
 #define JSON_ALERT_FLAG_TRUE 1
@@ -33,259 +34,13 @@
 #ifndef EV_SDK_DEBUG
 #define EV_SDK_DEBUG 1
 #endif
-const int BGRA_CHANNEL_SIZE = 4;
-typedef float COLOR_BGRA_TYPE[BGRA_CHANNEL_SIZE];
-cv::Mat outputFrame;        // 用于存储算法处理后的输出图像，根据ji.h的接口规范，接口实现需要负责释放该资源
+
+cv::Mat outputFrame{0};        // 用于存储算法处理后的输出图像，根据ji.h的接口规范，接口实现需要负责释放该资源
 char *jsonResult = nullptr; // 用于存储算法处理后输出到JI_EVENT的json字符串，根据ji.h的接口规范，接口实现需要负责释放该资源
-
-// 算法与画图的可配置参数及其默认值
-typedef struct {
-    // 算法配置可选的配置参数
-    double nms;
-    double thresh;
-    double hierThresh;
-} ALGO_CONFIG_TYPE;
-
-std::map<std::string, ALGO_CONFIG_TYPE> mAlgoConfigs;   // 针对不同的cid（即camera id）所对应的算法配置
-ALGO_CONFIG_TYPE mAlgoConfigDefault = {0.6, 0.5, 0.5};     // 默认的算法配置
-
-bool drawROIArea = false;   // 是否画ROI
-COLOR_BGRA_TYPE roiColor = {120, 120, 120, 1.0f};  // ROI框的颜色
-int roiLineThickness = 4;   // ROI框的粗细
-bool roiFill = false;       // 是否使用颜色填充ROI区域
-bool drawResult = true;         // 是否画检测框
-bool drawConfidence = false;    // 是否画置信度
-int dogRectLineThickness = 4;   // 目标框粗细
-
-
-std::string dogRectText("dog");    // 检测目标框顶部文字
-COLOR_BGRA_TYPE dogRectColor = {0, 255, 0, 1.0f};      // 检测框`mark`的颜色
-COLOR_BGRA_TYPE textFgColor = {0, 0, 0, 0};         // 检测框顶部文字的颜色
-COLOR_BGRA_TYPE textBgColor = {255, 255, 255, 0};   // 检测框顶部文字的背景颜色
-int dogTextHeight = 30;  // 目标框顶部字体大小
-
-int warningTextSize = 40;   // 画到图上的报警文字大小
-std::string warningText("WARNING!");    // 画到图上的报警文字
-COLOR_BGRA_TYPE warningTextFg = {255, 255, 255, 0}; // 报警文字颜色
-COLOR_BGRA_TYPE warningTextBg = {0, 0, 255, 0}; // 报警文字背景颜色
-cv::Point warningTextLeftTop(0, 0); // 报警文字左上角位置
-
-std::vector<cv::Rect> currentROIRects; // 矩形roi区域
-std::vector<VectorPoint> currentROIOrigPolygons;    // Original roi polygons
-std::vector<std::string> origROIArgs;
-cv::Size currentInFrameSize(0, 0);  // 当前处理帧的尺寸
+Configuration config;
 
 /**
- * 从cJSON数组中获取RGB的三个通道值，并填充到color数组中
- *
- * @param[out] color 填充后的数组
- * @param[in] bgraArr 存储有BGRA值的cJSON数组
- */
-void getBGRAColor(COLOR_BGRA_TYPE &color, cJSON *rgbArr) {
-    if (rgbArr == nullptr || rgbArr->type != cJSON_Array || cJSON_GetArraySize(rgbArr) != BGRA_CHANNEL_SIZE) {
-        LOG(ERROR) << "Invalid RGBA value!";
-        return;
-    }
-    for (int i = 0; i < BGRA_CHANNEL_SIZE; ++i) {
-        cJSON *channelObj = cJSON_GetArrayItem(rgbArr, i);
-        color[i] = channelObj->valuedouble;
-    }
-}
-
-/**
- * 当输入图片尺寸变更时，更新ROI
- **/
-void onInFrameSizeChanged(int newWidth, int newHeight) {
-    LOG(INFO) << "on input frame size changed:(" << newWidth << ", " << newHeight << ")";
-    if (newWidth <= 0 || newHeight <= 0) {
-        return;
-    }
-
-    currentInFrameSize.width = newWidth;
-    currentInFrameSize.height = newHeight;
-    currentROIOrigPolygons.clear();
-    currentROIRects.clear();
-
-    VectorPoint currentFramePolygon;
-    currentFramePolygon.emplace_back(cv::Point(0, 0));
-    currentFramePolygon.emplace_back(cv::Point(currentInFrameSize.width, 0));
-    currentFramePolygon.emplace_back(cv::Point(currentInFrameSize.width, currentInFrameSize.height));
-    currentFramePolygon.emplace_back(cv::Point(0, currentInFrameSize.height));
-
-    WKTParser wktParser(cv::Size(newWidth, newHeight));
-    for (auto &roiStr : origROIArgs) {
-        LOG(WARNING) << "parsing roi:" << roiStr;
-        VectorPoint polygon;
-        wktParser.parsePolygon(roiStr, &polygon);
-        bool isPolygonValid = true;
-        for (auto &point : polygon) {
-            if (!wktParser.inPolygon(currentFramePolygon, point)) {
-                LOG(ERROR) << "point " << point << " not in polygon!";
-                isPolygonValid = false;
-                break;
-            }
-        }
-        if (!isPolygonValid) {
-            LOG(ERROR) << "roi " << roiStr << " not valid! skipped!";
-            continue;
-        }
-        currentROIOrigPolygons.emplace_back(polygon);
-    }
-    if (currentROIOrigPolygons.empty()) {
-        currentROIOrigPolygons.emplace_back(currentFramePolygon);
-        LOG(WARNING) << "Using the whole image as roi!";
-    }
-
-    for (auto &roiPolygon : currentROIOrigPolygons) {
-        cv::Rect rect;
-        wktParser.polygon2Rect(roiPolygon, rect);
-        currentROIRects.emplace_back(rect);
-    }
-}
-
-/**
- * 解析json格式的配置参数
- *
- * @param[in] configStr json格式的配置参数字符串
- * @return 当前参数解析后，生成的算法相关配置参数
- */
-ALGO_CONFIG_TYPE parseAndUpdateArgs(const char *confStr) {
-    if (confStr == nullptr) {
-        return mAlgoConfigDefault;
-    }
-
-    cJSON *confObj = cJSON_Parse(confStr);
-    if (confObj == nullptr) {
-        LOG(ERROR) << "Failed parsing `" << confStr << "`";
-        return mAlgoConfigDefault;
-    }
-    cJSON *drawROIObj = cJSON_GetObjectItem(confObj, "draw_roi_area");
-    if (drawROIObj != nullptr && (drawROIObj->type == cJSON_True || drawROIObj->type == cJSON_False)) {
-        drawROIArea = drawROIObj->valueint;
-    }
-    if (drawROIArea) {
-        cJSON *roiColorRootObj = cJSON_GetObjectItem(confObj, "roi_color");
-        if (roiColorRootObj != nullptr && roiColorRootObj->type == cJSON_Array) {
-            getBGRAColor(roiColor, roiColorRootObj);
-        }
-        cJSON *roiThicknessObj = cJSON_GetObjectItem(confObj, "roi_line_thickness");
-        if (roiThicknessObj != nullptr && roiThicknessObj->type == cJSON_Number) {
-            roiLineThickness = roiThicknessObj->valueint;
-        }
-        cJSON *roiFillObj = cJSON_GetObjectItem(confObj, "roi_fill");
-        if (roiThicknessObj != nullptr && (roiFillObj->type == cJSON_True || roiFillObj->type == cJSON_False)) {
-            roiFill = roiFillObj->valueint;
-        }
-
-        cJSON *roiArrObj = cJSON_GetObjectItem(confObj, "roi");
-        if (roiArrObj != nullptr && roiArrObj->type == cJSON_Array && cJSON_GetArraySize(roiArrObj) > 0) {
-            std::vector<std::string> roiStrs;
-            for (int i = 0; i < cJSON_GetArraySize(roiArrObj); ++i) {
-                cJSON *roiObj = cJSON_GetArrayItem(roiArrObj, i);
-                if (roiObj == nullptr || roiObj->type != cJSON_String) {
-                    continue;
-                }
-                roiStrs.emplace_back(std::string(roiObj->valuestring));
-            }
-            if (!roiStrs.empty()) {
-                origROIArgs = roiStrs;
-                onInFrameSizeChanged(currentInFrameSize.width, currentInFrameSize.height);
-            }
-        }
-    }
-    cJSON *drawResultObj = cJSON_GetObjectItem(confObj, "draw_result");
-    if (drawResultObj != nullptr && (drawResultObj->type == cJSON_True || drawResultObj->type == cJSON_False)) {
-        drawResult = drawResultObj->valueint;
-    }
-    cJSON *drawConfObj = cJSON_GetObjectItem(confObj, "draw_confidence");
-    if (drawConfObj != nullptr && (drawConfObj->type == cJSON_True || drawConfObj->type == cJSON_False)) {
-        drawConfidence = drawConfObj->valueint;
-    }
-
-    cJSON *markTextObj = cJSON_GetObjectItem(confObj, "mark_text");
-    if (markTextObj != nullptr && markTextObj->type == cJSON_String) {
-        dogRectText = markTextObj->valuestring;
-    }
-    cJSON *textFgColorRootObj = cJSON_GetObjectItem(confObj, "object_text_color");
-    if (textFgColorRootObj != nullptr && textFgColorRootObj->type == cJSON_Array) {
-        getBGRAColor(textFgColor, textFgColorRootObj);
-    }
-    cJSON *textBgColorRootObj = cJSON_GetObjectItem(confObj, "object_text_bg_color");
-    if (textBgColorRootObj != nullptr && textBgColorRootObj->type == cJSON_Array) {
-        getBGRAColor(textBgColor, textBgColorRootObj);
-    }
-    cJSON *objectRectLineThicknessObj = cJSON_GetObjectItem(confObj, "object_rect_line_thickness");
-    if (objectRectLineThicknessObj != nullptr && objectRectLineThicknessObj->type == cJSON_Number) {
-        dogRectLineThickness = objectRectLineThicknessObj->valueint;
-    }
-    cJSON *markRectColorObj = cJSON_GetObjectItem(confObj, "dog_rect_color");
-    if (markRectColorObj != nullptr && markRectColorObj->type == cJSON_Array) {
-        getBGRAColor(dogRectColor, markRectColorObj);
-    }
-
-    cJSON *markTextSizeObj = cJSON_GetObjectItem(confObj, "object_text_size");
-    if (markTextSizeObj != nullptr && markTextSizeObj->type == cJSON_Number) {
-        dogTextHeight = markTextSizeObj->valueint;
-    }
-
-    cJSON *warningTextSizeObj = cJSON_GetObjectItem(confObj, "warning_text_size");
-    if (warningTextSizeObj != nullptr && warningTextSizeObj->type == cJSON_Number) {
-        warningTextSize = warningTextSizeObj->valueint;
-    }
-
-    cJSON *warningTextObj = cJSON_GetObjectItem(confObj, "warning_text");
-    if (warningTextObj != nullptr && warningTextObj->type == cJSON_String) {
-        warningText = warningTextObj->valuestring;
-    }
-    cJSON *warningTextFgObj = cJSON_GetObjectItem(confObj, "warning_text_color");
-    if (warningTextFgObj != nullptr && warningTextFgObj->type == cJSON_Array) {
-        getBGRAColor(warningTextFg, warningTextFgObj);
-    }
-    cJSON *warningTextBgObj = cJSON_GetObjectItem(confObj, "warning_text_bg_color");
-    if (warningTextBgObj != nullptr && warningTextBgObj->type == cJSON_Array) {
-        getBGRAColor(warningTextBg, warningTextBgObj);
-    }
-
-    cJSON *warningTextLefTopObj = cJSON_GetObjectItem(confObj, "warning_text_left_top");
-    if (warningTextLefTopObj != nullptr && warningTextLefTopObj->type == cJSON_Array) {
-        cJSON *leftObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
-        cJSON *topObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
-        if (leftObj != nullptr && leftObj->type == cJSON_Number) {
-            warningTextLeftTop.x = leftObj->valueint;
-        }
-        if (topObj != nullptr && topObj->type == cJSON_Number) {
-            warningTextLeftTop.y = topObj->valueint;
-        }
-    }
-
-    // 针对不同的cid获取算法配置参数，如果没有cid参数，就使用默认的配置参数
-    ALGO_CONFIG_TYPE algoConfig{mAlgoConfigDefault.nms, mAlgoConfigDefault.thresh, mAlgoConfigDefault.hierThresh};
-    bool isNeedUpdateThresh = false;
-    float newThresh = algoConfig.thresh;
-    cJSON *threshObj = cJSON_GetObjectItem(confObj, "thresh");
-    if (threshObj != nullptr && threshObj->type == cJSON_Number) {
-        newThresh = threshObj->valuedouble;     // 获取默认的阈值
-        isNeedUpdateThresh = true;
-        algoConfig.thresh = newThresh;
-    }
-    cJSON *cidObj = cJSON_GetObjectItem(confObj, "cid");
-    if (cidObj != nullptr && cidObj->type == cJSON_Number) {
-        // 如果能够找到cid，当前配置就针对对应的cid进行更改
-        if (mAlgoConfigs.find(cidObj->valuestring) == mAlgoConfigs.end()) {
-            mAlgoConfigs.emplace(std::make_pair(cidObj->valuestring, mAlgoConfigDefault));
-        }
-        if (isNeedUpdateThresh) {
-            mAlgoConfigs[cidObj->valuestring].thresh = newThresh;
-        }
-        algoConfig = mAlgoConfigs[cidObj->valuestring];
-    }
-
-    cJSON_Delete(confObj);
-    return algoConfig;
-}
-
-/**
- * 使用predictor对输入图像inFrame进行处理
+ * @brief 使用predictor对输入图像inFrame进行处理
  *
  * @param[in] predictor 算法句柄
  * @param[in] inFrame 输入图像
@@ -316,15 +71,13 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
         }
     }
 #endif
-    if (currentInFrameSize.width != inFrame.cols || currentInFrameSize.height != inFrame.rows) {
-        onInFrameSizeChanged(inFrame.cols, inFrame.rows);
-    }
+    config.onInFrameSizeChanged(inFrame.cols, inFrame.rows);
 
     /**
      * 解析参数并更新，根据接口规范标准，接口必须支持配置文件/usr/local/ev_sdk/model/algo_config.json内参数的实时更新功能
      * （即通过ji_calc_*等接口传入）
      */
-    ALGO_CONFIG_TYPE algoConfig = parseAndUpdateArgs(args);
+    ALGO_CONFIG_TYPE algoConfig = config.parseAndUpdateArgs(args);
     detector->setThresh(algoConfig.thresh);
 
     // 针对每个ROI进行算法处理
@@ -332,7 +85,7 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
     std::vector<cv::Rect> detectedTargets;
 
     // 算法处理
-    for (auto &roiRect : currentROIRects) {
+    for (auto &roiRect : config.currentROIRects) {
         LOG(WARNING) << "current roi:" << roiRect;
         // Fix darknet save_image bug, image width and height should be divisible by 2
         if (roiRect.width % 2 != 0) {
@@ -342,12 +95,12 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
             roiRect.height -= 1;
         }
 
-        cv::Mat cropedMatRef = inFrame(roiRect);
-        cv::Mat cropedMat;
-        cropedMatRef.copyTo(cropedMat);
+        cv::Mat croppedMatRef = inFrame(roiRect);
+        cv::Mat croppedMat;
+        croppedMatRef.copyTo(croppedMat);
 
         std::vector<SampleDetector::Object> objects;
-        int processRet = detector->processImage(cropedMat, objects);
+        int processRet = detector->processImage(croppedMat, objects);
         if (processRet != SampleDetector::PROCESS_OK) {
             return JISDK_RET_FAILED;
         }
@@ -365,25 +118,26 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
     // 创建输出图
     inFrame.copyTo(outFrame);
     // 画ROI区域
-    if (drawROIArea && !currentROIOrigPolygons.empty()) {
-        drawPolygon(outFrame, currentROIOrigPolygons, cv::Scalar(roiColor[0], roiColor[1], roiColor[2]), roiColor[3], cv::LINE_AA, roiLineThickness, roiFill);
+    if (config.drawROIArea && !config.currentROIOrigPolygons.empty()) {
+        drawPolygon(outFrame, config.currentROIOrigPolygons, cv::Scalar(config.roiColor[0], config.roiColor[1], config.roiColor[2]),
+                config.roiColor[3], cv::LINE_AA, config.roiLineThickness, config.roiFill);
     }
     // 判断是否要要报警并将检测到的目标画到输出图上
     for (auto &object : detectedObjects) {
         // 如果检测到有`狗`就报警
         if (strcmp(object.name.c_str(), "dog") == 0) {
             LOG(INFO) << "Found " << object.name;
-            if (drawResult) {
+            if (config.drawResult) {
                 std::stringstream ss;
-                ss << dogRectText;
-                if (drawConfidence) {
+                ss << config.dogRectText;
+                if (config.drawConfidence) {
                     ss.precision(2);
-                    ss << std::fixed << (dogRectText.empty() ? "" : ": ") << object.prob * 100 << "%";
+                    ss << std::fixed << (config.dogRectText.empty() ? "" : ": ") << object.prob * 100 << "%";
                 }
-                drawRectAndText(outFrame, object.rect, ss.str(), dogRectLineThickness, cv::LINE_AA,
-                        cv::Scalar(dogRectColor[0], dogRectColor[1], dogRectColor[2]), dogRectColor[3], dogTextHeight,
-                        cv::Scalar(textFgColor[0], textFgColor[1], textFgColor[2]),
-                        cv::Scalar(textBgColor[0], textBgColor[1], textBgColor[2]));
+                drawRectAndText(outFrame, object.rect, ss.str(), config.dogRectLineThickness, cv::LINE_AA,
+                        cv::Scalar(config.dogRectColor[0], config.dogRectColor[1], config.dogRectColor[2]), config.dogRectColor[3], config.dogTextHeight,
+                        cv::Scalar(config.textFgColor[0], config.textFgColor[1], config.textFgColor[2]),
+                        cv::Scalar(config.textBgColor[0], config.textBgColor[1], config.textBgColor[2]));
             }
 
             isNeedAlert = true;
@@ -392,9 +146,9 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
     }
 
     if (isNeedAlert) {
-        drawText(outFrame, warningText, warningTextSize,
-                 cv::Scalar(warningTextFg[0], warningTextFg[1], warningTextFg[2]),
-                 cv::Scalar(warningTextBg[0], warningTextBg[1], warningTextBg[2]), warningTextLeftTop);
+        drawText(outFrame, config.warningText, config.warningTextSize,
+                 cv::Scalar(config.warningTextFg[0], config.warningTextFg[1], config.warningTextFg[2]),
+                 cv::Scalar(config.warningTextBg[0], config.warningTextBg[1], config.warningTextBg[2]), config.warningTextLeftTop);
     }
 
     // 将结果封装成json字符串
@@ -498,7 +252,7 @@ void *ji_create_predictor(int pdtype) {
     const char *configFile = "/usr/local/ev_sdk/config/algo_config.json";
     LOG(INFO) << "Parsing configuration file: " << configFile;
 
-    ALGO_CONFIG_TYPE algoConfig{mAlgoConfigDefault.nms, mAlgoConfigDefault.thresh, mAlgoConfigDefault.hierThresh};
+    ALGO_CONFIG_TYPE algoConfig{config.mAlgoConfigDefault.nms, config.mAlgoConfigDefault.thresh, config.mAlgoConfigDefault.hierThresh};
     std::ifstream confIfs(configFile);
     if (confIfs.is_open()) {
         size_t len = getFileLen(confIfs);
@@ -506,8 +260,8 @@ void *ji_create_predictor(int pdtype) {
         confIfs.read(confStr, len);
         confStr[len] = '\0';
 
-        algoConfig = parseAndUpdateArgs(confStr);
-        mAlgoConfigDefault = algoConfig;
+        algoConfig = config.parseAndUpdateArgs(confStr);
+        config.mAlgoConfigDefault = algoConfig;
         delete[] confStr;
         confIfs.close();
     }

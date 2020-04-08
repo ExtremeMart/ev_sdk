@@ -23,6 +23,13 @@ public:
         cv::Rect rect;
     } Object;
 
+    typedef struct {
+        // 算法配置可选的配置参数
+        double nms;
+        double thresh;
+        double hierThresh;
+    } ALGO_CONFIG_TYPE;
+
     SampleDetector(double thresh, double nms, double hierThresh);
 
     /**
@@ -67,8 +74,6 @@ public:
 
 private:
     network* mNetworkPtr{nullptr};
-
-    char *mProcessResult;
 
     char **mLabels = nullptr;
 
