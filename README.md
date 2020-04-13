@@ -214,7 +214,7 @@ make install
    2. 使用私钥加密参考码，并生成授权文件`license.txt`
 
       ```shell
-      /usr/local/ev_sdk/3rd/license/v20_0/tools/ev_license -l authorization/privateKey.pem authorization/reference.txt authorization/license.txt
+      /usr/local/ev_sdk/3rd/license/v20_0/bin/ev_license -l authorization/privateKey.pem authorization/reference.txt authorization/license.txt
       ```
 
 2. 检查授权功能和`ji.h`的接口规范性
