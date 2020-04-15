@@ -71,7 +71,9 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
         }
     }
 #endif
-    config.onInFrameSizeChanged(inFrame.cols, inFrame.rows);
+    if (inFrame.cols != config.currentInFrameSize.width || inFrame.rows != config.currentInFrameSize.height) {
+        config.updateROIInfo(inFrame.cols, inFrame.rows);
+    }
 
     /**
      * 解析参数并更新，根据接口规范标准，接口必须支持配置文件/usr/local/ev_sdk/model/algo_config.json内参数的实时更新功能

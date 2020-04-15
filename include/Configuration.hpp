@@ -95,7 +95,7 @@ struct Configuration {
                 }
                 if (!roiStrs.empty()) {
                     origROIArgs = roiStrs;
-                    onInFrameSizeChanged(currentInFrameSize.width, currentInFrameSize.height);
+                    updateROIInfo(currentInFrameSize.width, currentInFrameSize.height);
                 }
             }
         }
@@ -192,12 +192,7 @@ struct Configuration {
     /**
      * @brief 当输入图片尺寸变更时，更新ROI
      **/
-    void onInFrameSizeChanged(int newWidth, int newHeight) {
-        LOG(INFO) << "on input frame size changed:(" << newWidth << ", " << newHeight << ")";
-        if (newWidth <= 0 || newHeight <= 0 || (currentInFrameSize.width == newWidth && currentInFrameSize.height == newHeight)) {
-            return;
-        }
-
+    void updateROIInfo(int newWidth, int newHeight) {
         currentInFrameSize.width = newWidth;
         currentInFrameSize.height = newHeight;
         currentROIOrigPolygons.clear();
@@ -222,8 +217,8 @@ struct Configuration {
                     break;
                 }
             }
-            if (!isPolygonValid) {
-                LOG(ERROR) << "roi " << roiStr << " not valid! skipped!";
+            if (!isPolygonValid || polygon.empty()) {
+                LOG(ERROR) << "roi `" << roiStr << "` not valid! skipped!";
                 continue;
             }
             currentROIOrigPolygons.emplace_back(polygon);
