@@ -175,7 +175,7 @@ struct Configuration {
             algoConfig.thresh = newThresh;
         }
         cJSON *cidObj = cJSON_GetObjectItem(confObj, "cid");
-        if (cidObj != nullptr && cidObj->type == cJSON_Number) {
+        if (cidObj != nullptr && cidObj->type == cJSON_String) {
             // 如果能够找到cid，当前配置就针对对应的cid进行更改
             if (mAlgoConfigs.find(cidObj->valuestring) == mAlgoConfigs.end()) {
                 mAlgoConfigs.emplace(std::make_pair(cidObj->valuestring, mAlgoConfigDefault));

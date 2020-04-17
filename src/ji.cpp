@@ -97,9 +97,7 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
             roiRect.height -= 1;
         }
 
-        cv::Mat croppedMatRef = inFrame(roiRect);
-        cv::Mat croppedMat;
-        croppedMatRef.copyTo(croppedMat);
+        cv::Mat croppedMat = inFrame(roiRect).clone();
 
         std::vector<SampleDetector::Object> objects;
         int processRet = detector->processImage(croppedMat, objects);
