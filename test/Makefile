@@ -34,7 +34,7 @@ all: $(APP)
 
 $(APP): $(OBJS)
 	$(CPP) -o $@ $(OBJS) $(CPPFLAGS) $(LDFLAGS) -Wl,-rpath=/usr/local/ev_sdk/lib
-	cp $(APP) ../bin
+	#cp $(APP) ../bin
 
 clean:
 #	echo $(SRCS)
