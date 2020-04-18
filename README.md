@@ -67,20 +67,16 @@ make install
 1. 要使用`/usr/local/ev_sdk/bin/test-ji-api`测试`EV_SDK`的接口，需要重新生成授权所使用的参考码`reference.txt`，并使用私钥对其进行加密后重新生成授权文件`license.txt`
 
    ```shell
-   # 生成公私钥
-   mkdir -p /usr/local/ev_sdk/authorization
-   cd /usr/local/ev_sdk/authorization/
-   /usr/local/ev_sdk/3rd/license/v20_0/bin/generateRsaKey.sh
-   # 生成参考文件
-   /usr/local/ev_sdk/3rd/license/v20_0/bin/ev_license -r reference.txt
-   # 生成授权文件
-   /usr/local/ev_sdk/3rd/license/v20_0/bin/ev_license -l privateKey.pem reference.txt license.txt
+   # 生成公私钥以及公钥对应的头文件
+   bash /usr/local/ev_sdk/3rd/license/bin/oneKeyAuth.sh
+   # 生成硬件参考码文件和授权文件
+   bash /usr/local/ev_sdk/3rd/license/bin/oneKeyTest.sh
    ```
-
+   
 2. 使用`test-ji-api`测试`ji_calc_frame`接口，测试添加了一个`ROI`参数
 
    ```shell
-   /usr/local/ev_sdk/bin/test-ji-api -f ji_calc_frame -i /usr/local/ev_sdk/data/dog.jpg -o /tmp/output.jpg -l /usr/local/ev_sdk/authorization/license.txt -a "{\"roi\":[\"POLYGON((0.21666666666666667 0.255,0.6924242424242424 0.1375,0.8833333333333333 0.72,0.4106060606060606 0.965,0.048484848484848485 0.82,0.2196969696969697 0.2575))\"]}"
+   /usr/local/ev_sdk/bin/test-ji-api -f ji_calc_frame -i /usr/local/ev_sdk/data/dog.jpg -o /tmp/output.jpg -l /usr/local/ev_sdk/authorization/license.txt -a "{\"roi\":[\"POLYGON((0.2 0.2,0.6 0.1,0.8 0.7,0.4 0.9,0.1 0.8,0.2 0.25))\"]}"
    ```
 
    输出内容样例：
@@ -116,25 +112,13 @@ mv dev-docs /usr/local/ev_sdk
 
 #### 生成授权功能所依赖的文件
 
-1. 使用`EV_SDK`提供的工具生成公钥和私钥
+1. 使用`EV_SDK`提供的工具一键生成公钥和私钥、以及公钥对应的头文件`pubKey.hpp`
 
    ```shell
-   mkdir -p /usr/local/ev_sdk/authorization
-   cd /usr/local/ev_sdk/authorization
-   /usr/local/3rd/license/v20_0/bin/generateRsaKey.sh
+   bash /usr/local/ev_sdk/3rd/license/bin/oneKeyAuth.sh
    ```
-
-   执行成功后将生成公钥`authorization/pubKey.perm`和私钥`authorization/privateKey.pem`。
-
-2. 将公钥转换成`C++`头文件
-
-   ```shell
-   /usr/local/ev_sdk/3rd/license/v20_0/bin/ev_codec -c authorization/pubKey.perm authorization/pubKey.hpp
-   # 将头文件移动到代码处
-   mv /usr/local/ev_sdk/authorization/pubKey.hpp /usr/local/ev_sdk/include
-   ```
-
-   这个包含公钥的头文件将被**硬编码**到`libji.so`。
+   
+   执行成功后将在`/usr/local/ev_sdk`下生成公钥`authorization/pubKey.perm`和私钥`authorization/privateKey.pem`，以及头文件`include/pubKey.hpp`；
 
 3. 在`ji_init(int argc, char **argv)`的接口实现中，添加校验授权文件的功能。
 
@@ -202,20 +186,17 @@ make install
 
 测试`libji.so`的授权功能是否正常工作以及`ji.h`的接口规范
 
-1. 生成授权文件
+1. 使用`EV_SDK`提供的程序`oneKeyTest.sh`一键生成授权文件
 
-   1. 使用`EV_SDK`提供的工具生成与当前主机关联的硬件参考码
+   ```shell
+   bash /usr/local/ev_sdk/3rd/license/bin/oneKeyTest.sh
+   ```
 
-      ```shell
-      cd /usr/local/ev_sdk/
-      /usr/local/ev_sdk/3rd/license/v20_0/bin/ev_license -r authorization/reference.txt
-      ```
+   `oneKeyTest.sh`会执行：
 
-   2. 使用私钥加密参考码，并生成授权文件`license.txt`
+   - 检查`authorization/pubKey.pem`和`authorization/privateKey.pem`的有效性；
 
-      ```shell
-      /usr/local/ev_sdk/3rd/license/v20_0/bin/ev_license -l authorization/privateKey.pem authorization/reference.txt authorization/license.txt
-      ```
+   - 生成硬件参考码文件`authorization/reference.txt`和授权文件`authorization/license.txt`。
 
 2. 检查授权功能和`ji.h`的接口规范性
 
@@ -226,7 +207,7 @@ make install
    -i /usr/local/ev_sdk/data/dog.jpg \
    -o /tmp/output.jpg \
    -l /usr/local/ev_sdk/authorization/license.txt \
-   -a "{\"roi\":[\"POLYGON((0.21666666666666667 0.255,0.6924242424242424 0.1375,0.8833333333333333 0.72,0.4106060606060606 0.965,0.048484848484848485 0.82,0.2196969696969697 0.2575))\"]}"
+   -a "{\"roi\":[\"POLYGON((0.2 0.2,0.6 0.1,0.8 0.7,0.4 0.9,0 0.8,0.2 0.2))\"]}"
    ```
    
    接口测试程序的详细功能请查阅`test-ji-api --help`的帮助文档及其代码[test.cpp](test/src/test.cpp)
@@ -339,6 +320,33 @@ make install
 ```
 
 例如当算法支持输入`ROI`参数时，那么开发者需要在`EV_SDK`的接口实现中解析上面示例中`roi`这一值，提取其中的`ROI`参数，并使用`WKTParser`对其进行解析，应用到自己的算法逻辑中。
+
+### 如何在`algo_config.json`内添加一个自定义配置项？
+
+假定需要在配置文件中添加一个额外的算法阈值参数`nms_thresh`，则需要：
+
+1. 在`algo_config.json`中加入默认配置参数：
+
+   ```json
+   "nms_thresh": 0.4
+   ```
+
+2. 在`Configuration.hpp`中的`Configuration`结构体中添加这一参数对应的变量：
+
+   ```c++
+   float nmsThresh = 0.4;
+   ```
+
+3. 在`Configuration.hpp`的`Configuration.parseAndUpdateArgs`方法中添加对该参数的解析代码：
+
+   ```c++
+   cJSON *nmsThreshObj = cJSON_GetObjectItem(confObj, "nms_thresh");
+   if (nmsThreshObj != nullptr && nmsThreshObj->type == cJSON_Number) {
+   	nmsThresh = nmsThreshObj->valuedouble;     // 获取默认的阈值
+     algoConfig.thresh = newThresh;
+   }
+   ```
+
 ### 为什么不能且不需要修改`/usr/local/ev_sdk/test`下的代码？
 
 1. `/usr/local/ev_sdk/test`下的代码是用于测试`ji.h`接口在`libji.so`中是否被正确实现，这一测试程序与`EV_SDK`的实现无关，且是极市方的测试标准，不能变动；
