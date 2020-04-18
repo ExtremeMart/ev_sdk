@@ -10,10 +10,10 @@ SRCS:= \
 OBJS:= $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SRCS)))
 
 CPPFLAGS:= \
-	-I/usr/local/include/opencv4 \
+	`pkg-config --cflags opencv 2> /dev/null || pkg-config --cflags opencv4` \
 	-I../include \
 	-I../3rd/cJSON/include \
-	-I../3rd/license/v20_0/include
+	-I../3rd/license/include
 
 LDFLAGS:= \
 	-L../lib -lji \
