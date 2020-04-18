@@ -202,6 +202,8 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
 }
 
 int ji_init(int argc, char **argv) {
+    LOG(INFO) << "EV_SDK version:" << EV_SDK_VERSION;
+    LOG(INFO) << "License version:" << EV_LICENSE_VERSION;
     int authCode = JISDK_RET_SUCCEED;
 #ifdef ENABLE_JI_AUTHORIZATION
     // 检查license参数
