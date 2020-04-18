@@ -25,6 +25,9 @@
    - `warning_text_bg_color`：报警文字背景颜色，BGRA浮点型数组格式，BGR三通道的范围是`[0,255]`，第四个元素不使用，默认：`[0, 0, 200, 0]`
    - `warning_text_left_top`：报警文字左上角坐标，整形数组，格式：`[x, y]`，`x`的范围`[0,width]`，`y`的范围`[0,height]`，默认：`[0, 0]`
 
+## 3. 静态参数
+   - `static_warning_text_left_top`：报警文字左上角坐标，整形数组，格式：`[x, y]`，`x`的范围`[0,width]`，`y`的范围`[0,height]`，默认：`[0, 0]`
+
  ### 3. 参数实时更新功能
  所有可配置参数必须支持能够在调用`ji_calc_frame`、`ji_calc_buffer`、`ji_calc_file`、`ji_calc_video_file`四个接口时，进行实时更新。
  也就是必须要在`ji_calc_*`等接口的`args`参数中，加入这些可配置项。

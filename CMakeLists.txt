@@ -8,7 +8,7 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 # 使用pkg-config查找必要的依赖包
 find_package(OpenCV REQUIRED)
 find_library(glog REQUIRED)
-set(ENV{PKG_CONFIG_PATH} "/usr/local/ev_sdk/3rd/ev_encrypt_module/lib/pkgconfig:/usr/local/ev_sdk/3rd/license/v20_0/lib/pkgconfig:ENV{PKG_CONFIG_PATH}")
+set(ENV{PKG_CONFIG_PATH} "/usr/local/ev_sdk/3rd/ev_encrypt_module/lib/pkgconfig:/usr/local/ev_sdk/3rd/license/lib/pkgconfig:ENV{PKG_CONFIG_PATH}")
 find_package(PkgConfig REQUIRED)
 pkg_search_module(EV_ENCRYPT_MODULE REQUIRED ev_encrypt_module)
 pkg_search_module(JI_LICENSE REQUIRED ji_license)
@@ -54,8 +54,8 @@ target_link_libraries(test-ji-api
         ${PROJECT_NAME}
         )
 # Install libji_license_impl.so
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rd/license/v20_0/lib/libji_license_impl.so DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rd/license/v20_0/lib/license_lib.sig DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rd/license/lib/libji_license_impl.so DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rd/license/lib/license_lib.sig DESTINATION lib)
 # Install libev_encrypt_module
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rd/ev_encrypt_module/lib/libev_encrypt_module.so DESTINATION lib)
 # Install libji.so
