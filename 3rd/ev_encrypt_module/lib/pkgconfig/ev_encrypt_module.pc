@@ -1,6 +1,6 @@
 Name: ev_encrypt_module
 Description: 
-Version: 1.1.1
+Version: 1.1.2
 Requires: 
 prefix=/usr/local/ev_sdk/3rd/ev_encrypt_module/
 includedir=${prefix}/include/
