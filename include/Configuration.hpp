@@ -82,21 +82,20 @@ struct Configuration {
             if (roiThicknessObj != nullptr && (roiFillObj->type == cJSON_True || roiFillObj->type == cJSON_False)) {
                 roiFill = roiFillObj->valueint;
             }
-
-            cJSON *roiArrObj = cJSON_GetObjectItem(confObj, "roi");
-            if (roiArrObj != nullptr && roiArrObj->type == cJSON_Array && cJSON_GetArraySize(roiArrObj) > 0) {
-                std::vector<std::string> roiStrs;
-                for (int i = 0; i < cJSON_GetArraySize(roiArrObj); ++i) {
-                    cJSON *roiObj = cJSON_GetArrayItem(roiArrObj, i);
-                    if (roiObj == nullptr || roiObj->type != cJSON_String) {
-                        continue;
-                    }
-                    roiStrs.emplace_back(std::string(roiObj->valuestring));
+        }
+        cJSON *roiArrObj = cJSON_GetObjectItem(confObj, "roi");
+        if (roiArrObj != nullptr && roiArrObj->type == cJSON_Array && cJSON_GetArraySize(roiArrObj) > 0) {
+            std::vector<std::string> roiStrs;
+            for (int i = 0; i < cJSON_GetArraySize(roiArrObj); ++i) {
+                cJSON *roiObj = cJSON_GetArrayItem(roiArrObj, i);
+                if (roiObj == nullptr || roiObj->type != cJSON_String) {
+                    continue;
                 }
-                if (!roiStrs.empty()) {
-                    origROIArgs = roiStrs;
-                    updateROIInfo(currentInFrameSize.width, currentInFrameSize.height);
-                }
+                roiStrs.emplace_back(std::string(roiObj->valuestring));
+            }
+            if (!roiStrs.empty()) {
+                origROIArgs = roiStrs;
+                updateROIInfo(currentInFrameSize.width, currentInFrameSize.height);
             }
         }
         cJSON *drawResultObj = cJSON_GetObjectItem(confObj, "draw_result");
