@@ -44,6 +44,12 @@ int SampleDetector::init(char *namesFile, const char *modelCfgStr, char *weights
 
 void SampleDetector::unInit() {
     if (mLabels) {
+        for (int i = 0; i < mClasses; ++i) {
+            if (mLabels[i]) {
+                free(mLabels[i]);
+                mLabels[i] = nullptr;
+            }
+        }
         free(mLabels);
         mLabels = nullptr;
     }
@@ -98,6 +104,7 @@ STATUS SampleDetector::processImage(const cv::Mat &cv_image, std::vector<Object>
 
     // Release resources
     free_image(im);
+    free_image(sized);
     free_detections(detections, num_boxes);
 
     return SampleDetector::PROCESS_OK;
