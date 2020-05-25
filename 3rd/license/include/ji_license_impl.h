@@ -15,7 +15,7 @@ extern "C" {
 联网最新版本:v8
 ** 
 */
-#define EV_LICENSE_VERSION  "version:v20.0.1"
+#define EV_LICENSE_VERSION  "version:v20.0.2"
 
 #define EV_MESSAGE_MAXLEN   (4096)
 #define EV_ID_MAXLEN        (1024)
