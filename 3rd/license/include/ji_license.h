@@ -32,6 +32,8 @@ typedef int check_expire_type();
 
 typedef int check_expire_only_type();
 
+typedef int get_license_version_type(char **version);
+
 DLL_DEFAULT
 int ji_generate_reference(char *info, char *reference, int *version);
 
@@ -52,6 +54,9 @@ int ji_check_expire();
 
 DLL_DEFAULT
 int ji_check_expire_only();
+
+DLL_DEFAULT
+int ji_get_license_version(char **version);
 
 #ifdef __cplusplus
 }

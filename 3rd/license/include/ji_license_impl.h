@@ -15,7 +15,7 @@ extern "C" {
 联网最新版本:v8
 ** 
 */
-#define EV_LICENSE_VERSION  "version:v20.0.2"
+#define EV_LICENSE_VERSION  "version:v20.1.3"
 
 #define EV_MESSAGE_MAXLEN   (4096)
 #define EV_ID_MAXLEN        (1024)
@@ -127,6 +127,14 @@ int ji_check_expire_impl();
 *****************************************************************************/
 DLL_DEFAULT
 int ji_check_expire_only_impl();
+
+/**
+ * 获取license版本信息，
+ * @param version[out], 返回的版本信息, 需要外部释放内存空间
+ * @return 成功返回EV_SUCCESS, 其他值表示失败
+ */
+DLL_DEFAULT
+int ji_get_license_version_impl(char **version);
 
 #ifdef __cplusplus
 }
