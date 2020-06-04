@@ -699,9 +699,13 @@ int main(int argc, char *argv[])
     google::InstallFailureSignalHandler();
     google::InstallFailureWriter(&signal_handle);
 
+    // Get license version
+    char *license_version = nullptr;
+    ji_get_license_version(&license_version);
     LOG(INFO) << "version info:"
               << "\n\tEV_SDK_VERSION: "     << EV_SDK_VERSION
-              << "\n\tEV_LICENSE_VERSION: " << EV_LICENSE_VERSION;
+              << "\n\tEV_LICENSE_VERSION: " << license_version;
+    free(license_version);
 
     //parse params
     const char *short_options = "hf:l:i:a:o:r:";

@@ -203,9 +203,14 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
 
 int ji_init(int argc, char **argv) {
     LOG(INFO) << "EV_SDK version:" << EV_SDK_VERSION;
-    LOG(INFO) << "License version:" << EV_LICENSE_VERSION;
     int authCode = JISDK_RET_SUCCEED;
 #ifdef ENABLE_JI_AUTHORIZATION
+    // Get license version
+    char *license_version = nullptr;
+    ji_get_license_version(&license_version);
+    LOG(INFO) << "License version:" << license_version;
+    free(license_version);
+
     // 检查license参数
     if (argc < 6) {
         return JISDK_RET_INVALIDPARAMS;
