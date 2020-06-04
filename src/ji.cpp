@@ -161,14 +161,14 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
     cJSON *dogsObj = cJSON_CreateArray();
     for (auto &dog : dogs) {
         cJSON *odbObj = cJSON_CreateObject();
-        int xmin = dog.rect.x;
-        int ymin = dog.rect.y;
-        int xmax = xmin + dog.rect.width;
-        int ymax = ymin + dog.rect.height;
-        cJSON_AddItemToObject(odbObj, "xmin", cJSON_CreateNumber(xmin));
-        cJSON_AddItemToObject(odbObj, "ymin", cJSON_CreateNumber(ymin));
-        cJSON_AddItemToObject(odbObj, "xmax", cJSON_CreateNumber(xmax));
-        cJSON_AddItemToObject(odbObj, "ymax", cJSON_CreateNumber(ymax));
+        int x = dog.rect.x;
+        int y = dog.rect.y;
+        int width = dog.rect.width;
+        int height = dog.rect.height;
+        cJSON_AddItemToObject(odbObj, "x", cJSON_CreateNumber(x));
+        cJSON_AddItemToObject(odbObj, "y", cJSON_CreateNumber(y));
+        cJSON_AddItemToObject(odbObj, "width", cJSON_CreateNumber(width));
+        cJSON_AddItemToObject(odbObj, "height", cJSON_CreateNumber(height));
         cJSON_AddItemToObject(odbObj, "confidence", cJSON_CreateNumber(dog.prob));
 
         cJSON_AddItemToArray(dogsObj, odbObj);
