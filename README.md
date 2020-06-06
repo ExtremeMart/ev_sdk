@@ -86,10 +86,10 @@ make install
     json: {
     "alert_flag":   1,
     "dogs": [{
-            "xmin": 129,
-            "ymin": 186,
-            "xmax": 369,
-            "ymax": 516,
+            "x": 129,
+            "y": 186,
+            "width": 369,
+            "height": 516,
             "confidence":   0.566474
         }]
     }
