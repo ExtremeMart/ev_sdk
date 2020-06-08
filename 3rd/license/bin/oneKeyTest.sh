@@ -43,7 +43,7 @@ fi
 echo -e "${NORMAL_TXT_COLOR}Checking if public key ${default_public_key} and priavte key ${default_private_key} match...${END_TAG}"
 rm -rf /tmp/tmp_pubKey.pem
 openssl rsa -in ${default_private_key} -pubout -out /tmp/tmp_pubKey.pem
-diff -s "/tmp/tmp_pubKey.pem" ${default_public_key} > /dev/null
+diff -Z -B -s "/tmp/tmp_pubKey.pem" ${default_public_key} > /dev/null
 ret=$?
 if [[ 0 -ne ${ret} ]]; then
     echo -e "${ERROR_TXT_COLOR}Public key and private key does not match!${END_TAG}"
