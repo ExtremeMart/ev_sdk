@@ -43,6 +43,7 @@ struct Configuration {
     COLOR_BGRA_TYPE textBgColor = {255, 255, 255, 0};   // 检测框顶部文字的背景颜色
     int dogTextHeight = 30;  // 目标框顶部字体大小
 
+    bool drawWarningText = true;
     int warningTextSize = 40;   // 画到图上的报警文字大小
     std::string warningText{"WARNING!"};    // 画到图上的报警文字
     COLOR_BGRA_TYPE warningTextFg = {255, 255, 255, 0}; // 报警文字颜色
@@ -133,33 +134,40 @@ struct Configuration {
             dogTextHeight = markTextSizeObj->valueint;
         }
 
-        cJSON *warningTextSizeObj = cJSON_GetObjectItem(confObj, "warning_text_size");
-        if (warningTextSizeObj != nullptr && warningTextSizeObj->type == cJSON_Number) {
-            warningTextSize = warningTextSizeObj->valueint;
+        cJSON *drawWarningTextObj = cJSON_GetObjectItem(confObj, "draw_warning_text");
+        if (drawWarningTextObj != nullptr && (drawWarningTextObj->type == cJSON_True || drawWarningTextObj->type == cJSON_False)) {
+            drawWarningText = drawWarningTextObj->valueint;
         }
 
-        cJSON *warningTextObj = cJSON_GetObjectItem(confObj, "warning_text");
-        if (warningTextObj != nullptr && warningTextObj->type == cJSON_String) {
-            warningText = warningTextObj->valuestring;
-        }
-        cJSON *warningTextFgObj = cJSON_GetObjectItem(confObj, "warning_text_color");
-        if (warningTextFgObj != nullptr && warningTextFgObj->type == cJSON_Array) {
-            getBGRAColor(warningTextFg, warningTextFgObj);
-        }
-        cJSON *warningTextBgObj = cJSON_GetObjectItem(confObj, "warning_text_bg_color");
-        if (warningTextBgObj != nullptr && warningTextBgObj->type == cJSON_Array) {
-            getBGRAColor(warningTextBg, warningTextBgObj);
-        }
-
-        cJSON *warningTextLefTopObj = cJSON_GetObjectItem(confObj, "warning_text_left_top");
-        if (warningTextLefTopObj != nullptr && warningTextLefTopObj->type == cJSON_Array) {
-            cJSON *leftObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
-            cJSON *topObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
-            if (leftObj != nullptr && leftObj->type == cJSON_Number) {
-                warningTextLeftTop.x = leftObj->valueint;
+        if (drawWarningText) {
+            cJSON *warningTextSizeObj = cJSON_GetObjectItem(confObj, "warning_text_size");
+            if (warningTextSizeObj != nullptr && warningTextSizeObj->type == cJSON_Number) {
+                warningTextSize = warningTextSizeObj->valueint;
             }
-            if (topObj != nullptr && topObj->type == cJSON_Number) {
-                warningTextLeftTop.y = topObj->valueint;
+
+            cJSON *warningTextObj = cJSON_GetObjectItem(confObj, "warning_text");
+            if (warningTextObj != nullptr && warningTextObj->type == cJSON_String) {
+                warningText = warningTextObj->valuestring;
+            }
+            cJSON *warningTextFgObj = cJSON_GetObjectItem(confObj, "warning_text_color");
+            if (warningTextFgObj != nullptr && warningTextFgObj->type == cJSON_Array) {
+                getBGRAColor(warningTextFg, warningTextFgObj);
+            }
+            cJSON *warningTextBgObj = cJSON_GetObjectItem(confObj, "warning_text_bg_color");
+            if (warningTextBgObj != nullptr && warningTextBgObj->type == cJSON_Array) {
+                getBGRAColor(warningTextBg, warningTextBgObj);
+            }
+
+            cJSON *warningTextLefTopObj = cJSON_GetObjectItem(confObj, "warning_text_left_top");
+            if (warningTextLefTopObj != nullptr && warningTextLefTopObj->type == cJSON_Array) {
+                cJSON *leftObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
+                cJSON *topObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
+                if (leftObj != nullptr && leftObj->type == cJSON_Number) {
+                    warningTextLeftTop.x = leftObj->valueint;
+                }
+                if (topObj != nullptr && topObj->type == cJSON_Number) {
+                    warningTextLeftTop.y = topObj->valueint;
+                }
             }
         }
 
