@@ -76,7 +76,7 @@ make install
 2. 使用`test-ji-api`测试`ji_calc_frame`接口，测试添加了一个`ROI`参数
 
    ```shell
-   /usr/local/ev_sdk/bin/test-ji-api -f ji_calc_frame -i /usr/local/ev_sdk/data/dog.jpg -o /tmp/output.jpg -l /usr/local/ev_sdk/authorization/license.txt -a "{\"roi\":[\"POLYGON((0.2 0.2,0.6 0.1,0.8 0.7,0.4 0.9,0.1 0.8,0.2 0.25))\"]}"
+   /usr/local/ev_sdk/bin/test-ji-api -f ji_calc_frame -i /usr/local/ev_sdk/data/dog.jpg -o /tmp/output.jpg -l /usr/local/ev_sdk/authorization/license.txt -a '{"roi":["POLYGON((0.2 0.2,0.6 0.1,0.8 0.7,0.4 0.9,0.1 0.8,0.2 0.25))"]}'
    ```
 
    输出内容样例：
@@ -207,7 +207,7 @@ make install
    -i /usr/local/ev_sdk/data/dog.jpg \
    -o /tmp/output.jpg \
    -l /usr/local/ev_sdk/authorization/license.txt \
-   -a "{\"roi\":[\"POLYGON((0.2 0.2,0.6 0.1,0.8 0.7,0.4 0.9,0 0.8,0.2 0.2))\"]}"
+   -a '{"roi":["POLYGON((0.2 0.2,0.6 0.1,0.8 0.7,0.4 0.9,0 0.8,0.2 0.2))"]}'
    ```
    
    接口测试程序的详细功能请查阅`test-ji-api --help`的帮助文档及其代码[test.cpp](test/src/test.cpp)
@@ -374,7 +374,7 @@ make install
    -f ji_calc_frame \
    -i /path/to/test.jpg \
    -l /path/to/license.txt \
-   -a "{\"roi\":[\"POLYGON((0.21666666666666667 0.255,0.6924242424242424 0.1375,0.8833333333333333 0.72,0.4106060606060606 0.965,0.048484848484848485 0.82,0.2196969696969697 0.2575))\"]}"
+   -a '{"roi":["POLYGON((0.21666666666666667 0.255,0.6924242424242424 0.1375,0.8833333333333333 0.72,0.4106060606060606 0.965,0.048484848484848485 0.82,0.2196969696969697 0.2575))"]}'
    ```
 
 3. 保存输出图片：

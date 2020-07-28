@@ -79,7 +79,7 @@ struct Configuration {
                 roiLineThickness = roiThicknessObj->valueint;
             }
             cJSON *roiFillObj = cJSON_GetObjectItem(confObj, "roi_fill");
-            if (roiThicknessObj != nullptr && (roiFillObj->type == cJSON_True || roiFillObj->type == cJSON_False)) {
+            if (roiFillObj != nullptr && (roiFillObj->type == cJSON_True || roiFillObj->type == cJSON_False)) {
                 roiFill = roiFillObj->valueint;
             }
         }
