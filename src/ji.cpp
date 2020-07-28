@@ -145,7 +145,7 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
         }
     }
 
-    if (isNeedAlert) {
+    if (isNeedAlert && config.drawWarningText) {
         drawText(outFrame, config.warningText, config.warningTextSize,
                  cv::Scalar(config.warningTextFg[0], config.warningTextFg[1], config.warningTextFg[2]),
                  cv::Scalar(config.warningTextBg[0], config.warningTextBg[1], config.warningTextBg[2]), config.warningTextLeftTop);
