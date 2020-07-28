@@ -59,9 +59,9 @@ fi
 echo -e "${NORMAL_TXT_COLOR}Generate header file for public key...${END_TAG}"
 if [[ -f "${public_key_header}" ]]; then
     rm ${public_key_header}
-    ${ev_codec_path} -c ${public_key} ${public_key_header}
-    sed -i 's|key|pubKey|' ${public_key_header}
-    echo -e "${NORMAL_TXT_COLOR}Header file saved to ${public_key_header}${END_TAG}"
 fi
+${ev_codec_path} -c ${public_key} ${public_key_header}
+sed -i 's|key|pubKey|' ${public_key_header}
+echo -e "${NORMAL_TXT_COLOR}Header file saved to ${public_key_header}${END_TAG}"
 
 echo "Done."
