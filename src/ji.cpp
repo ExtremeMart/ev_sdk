@@ -190,52 +190,6 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
     return JISDK_RET_SUCCEED;
 }
 
-int ji_init(int argc, char **argv) {
-    LOG(INFO) << "EV_SDK version:" << EV_SDK_VERSION;
-    int authCode = JISDK_RET_SUCCEED;
-#ifdef ENABLE_JI_AUTHORIZATION
-    // Get license version
-    char *license_version = nullptr;
-    ji_get_license_version(&license_version);
-    LOG(INFO) << "License version:" << license_version;
-    free(license_version);
-
-    // 检查license参数
-    if (argc < 6) {
-        return JISDK_RET_INVALIDPARAMS;
-    }
-
-    if (argv[0] == NULL || argv[5] == NULL) {
-        return JISDK_RET_INVALIDPARAMS;
-    }
-
-    int qps = 0;
-    if (argv[4]) qps = atoi(argv[4]);
-
-    // 使用公钥校验授权信息
-    int ret = ji_check_license(pubKey, argv[0], argv[1], argv[2], argv[3], qps > 0 ? &qps : NULL, atoi(argv[5]));
-    if (ret != EV_SUCCESS) {
-        authCode = JISDK_RET_UNAUTHORIZED;
-    }
-#endif
-    if (authCode != JISDK_RET_SUCCEED) {
-        LOG(ERROR) << "ji_check_license failed!";
-        return authCode;
-    }
-
-    return authCode;
-}
-
-void ji_reinit() {
-#ifdef ENABLE_JI_AUTHORIZATION
-    ji_check_license(NULL, NULL, NULL, NULL, NULL, NULL, 0);
-#endif
-    if (jsonResult) {
-        free(jsonResult);
-        jsonResult = nullptr;
-    }
-}
-
 
 void *ji_create_predictor(int pdtype) {
 #ifdef ENABLE_JI_AUTHORIZATION
@@ -293,8 +247,8 @@ void *ji_create_predictor(int pdtype) {
 #endif
 
     int iRet = detector->init("/usr/local/ev_sdk/config/coco.names",
-            decryptedModelStr,
-            "/usr/local/ev_sdk/model/model.dat");
+                              decryptedModelStr,
+                              "/usr/local/ev_sdk/model/model.dat");
     if (decryptedModelStr != nullptr) {
         free(decryptedModelStr);
     }
@@ -312,6 +266,52 @@ void ji_destroy_predictor(void *predictor) {
     auto *detector = reinterpret_cast<SampleDetector *>(predictor);
     detector->unInit();
     delete detector;
+}
+
+int ji_init(int argc, char **argv) {
+    LOG(INFO) << "EV_SDK version:" << EV_SDK_VERSION;
+    int authCode = JISDK_RET_SUCCEED;
+#ifdef ENABLE_JI_AUTHORIZATION
+    // Get license version
+    char *license_version = nullptr;
+    ji_get_license_version(&license_version);
+    LOG(INFO) << "License version:" << license_version;
+    free(license_version);
+
+    // 检查license参数
+    if (argc < 6) {
+        return JISDK_RET_INVALIDPARAMS;
+    }
+
+    if (argv[0] == NULL || argv[5] == NULL) {
+        return JISDK_RET_INVALIDPARAMS;
+    }
+
+    int qps = 0;
+    if (argv[4]) qps = atoi(argv[4]);
+
+    // 使用公钥校验授权信息
+    int ret = ji_check_license(pubKey, argv[0], argv[1], argv[2], argv[3], qps > 0 ? &qps : NULL, atoi(argv[5]));
+    if (ret != EV_SUCCESS) {
+        authCode = JISDK_RET_UNAUTHORIZED;
+    }
+#endif
+    if (authCode != JISDK_RET_SUCCEED) {
+        LOG(ERROR) << "ji_check_license failed!";
+        return authCode;
+    }
+
+    return authCode;
+}
+
+void ji_reinit() {
+#ifdef ENABLE_JI_AUTHORIZATION
+    ji_check_license(NULL, NULL, NULL, NULL, NULL, NULL, 0);
+#endif
+    if (jsonResult) {
+        free(jsonResult);
+        jsonResult = nullptr;
+    }
 }
 
 int ji_calc_frame(void *predictor, const JI_CV_FRAME *inFrame, const char *args,
