@@ -9,7 +9,7 @@
     "draw_confidence": true,
     "thresh": 0.5,
 
-    "dog_rect_color": [0, 255, 0, 0],
+    "target_rect_color": [0, 255, 0, 0],
     "object_rect_line_thickness": 3,
     "object_text_color": [255, 255, 255, 0],
     "object_text_bg_color": [50, 50, 50, 0],

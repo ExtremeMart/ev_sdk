@@ -122,15 +122,15 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
         LOG(INFO) << "Found " << object.name;
         if (config.drawResult) {
             std::stringstream ss;
-            ss << config.dogRectText;
+            ss << config.targetRectText;
             if (config.drawConfidence) {
                 ss.precision(2);
-                ss << std::fixed << (config.dogRectText.empty() ? "" : ": ") << object.prob * 100 << "%";
+                ss << std::fixed << (config.targetRectText.empty() ? "" : ": ") << object.prob * 100 << "%";
             }
-            drawRectAndText(outFrame, object.rect, ss.str(), config.dogRectLineThickness, cv::LINE_AA,
-                    cv::Scalar(config.dogRectColor[0], config.dogRectColor[1], config.dogRectColor[2]), config.dogRectColor[3], config.dogTextHeight,
-                    cv::Scalar(config.textFgColor[0], config.textFgColor[1], config.textFgColor[2]),
-                    cv::Scalar(config.textBgColor[0], config.textBgColor[1], config.textBgColor[2]));
+            drawRectAndText(outFrame, object.rect, ss.str(), config.targetRectLineThickness, cv::LINE_AA,
+                            cv::Scalar(config.targetRectColor[0], config.targetRectColor[1], config.targetRectColor[2]), config.targetRectColor[3], config.targetTextHeight,
+                            cv::Scalar(config.textFgColor[0], config.textFgColor[1], config.textFgColor[2]),
+                            cv::Scalar(config.textBgColor[0], config.textBgColor[1], config.textBgColor[2]));
         }
     }
 

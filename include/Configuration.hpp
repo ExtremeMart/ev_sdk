@@ -35,13 +35,13 @@ struct Configuration {
     bool roiFill = false;       // 是否使用颜色填充ROI区域
     bool drawResult = true;         // 是否画检测框
     bool drawConfidence = false;    // 是否画置信度
-    int dogRectLineThickness = 4;   // 目标框粗细
+    int targetRectLineThickness = 4;   // 目标框粗细
 
-    std::string dogRectText{"dog"};    // 检测目标框顶部文字
-    COLOR_BGRA_TYPE dogRectColor = {0, 255, 0, 1.0f};      // 检测框`mark`的颜色
+    std::string targetRectText{"dog"};    // 检测目标框顶部文字
+    COLOR_BGRA_TYPE targetRectColor = {0, 255, 0, 1.0f};      // 检测框`mark`的颜色
     COLOR_BGRA_TYPE textFgColor = {0, 0, 0, 0};         // 检测框顶部文字的颜色
     COLOR_BGRA_TYPE textBgColor = {255, 255, 255, 0};   // 检测框顶部文字的背景颜色
-    int dogTextHeight = 30;  // 目标框顶部字体大小
+    int targetTextHeight = 30;  // 目标框顶部字体大小
 
     bool drawWarningText = true;
     int warningTextSize = 40;   // 画到图上的报警文字大小
@@ -108,7 +108,7 @@ struct Configuration {
 
         cJSON *markTextObj = cJSON_GetObjectItem(confObj, "mark_text");
         if (markTextObj != nullptr && markTextObj->type == cJSON_String) {
-            dogRectText = markTextObj->valuestring;
+            targetRectText = markTextObj->valuestring;
         }
         cJSON *textFgColorRootObj = cJSON_GetObjectItem(confObj, "object_text_color");
         if (textFgColorRootObj != nullptr && textFgColorRootObj->type == cJSON_Array) {
@@ -120,16 +120,16 @@ struct Configuration {
         }
         cJSON *objectRectLineThicknessObj = cJSON_GetObjectItem(confObj, "object_rect_line_thickness");
         if (objectRectLineThicknessObj != nullptr && objectRectLineThicknessObj->type == cJSON_Number) {
-            dogRectLineThickness = objectRectLineThicknessObj->valueint;
+            targetRectLineThickness = objectRectLineThicknessObj->valueint;
         }
-        cJSON *markRectColorObj = cJSON_GetObjectItem(confObj, "dog_rect_color");
+        cJSON *markRectColorObj = cJSON_GetObjectItem(confObj, "target_rect_color");
         if (markRectColorObj != nullptr && markRectColorObj->type == cJSON_Array) {
-            getBGRAColor(dogRectColor, markRectColorObj);
+            getBGRAColor(targetRectColor, markRectColorObj);
         }
 
         cJSON *markTextSizeObj = cJSON_GetObjectItem(confObj, "object_text_size");
         if (markTextSizeObj != nullptr && markTextSizeObj->type == cJSON_Number) {
-            dogTextHeight = markTextSizeObj->valueint;
+            targetTextHeight = markTextSizeObj->valueint;
         }
 
         cJSON *drawWarningTextObj = cJSON_GetObjectItem(confObj, "draw_warning_text");
