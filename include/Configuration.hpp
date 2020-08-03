@@ -18,30 +18,32 @@ struct Configuration {
     typedef cv::Scalar COLOR_BGRA_TYPE;
 
     // 算法与画图的可配置参数及其默认值
-    // 1. 算法配置参数
-    std::map<std::string, ALGO_CONFIG_TYPE> mAlgoConfigs;   // 针对不同的cid（即camera id）所对应的算法配置
-    ALGO_CONFIG_TYPE mAlgoConfigDefault = {0.6, 0.5, 0.5};     // 默认的算法配置
-
-    // 2. roi配置
+    // 1. roi配置
     std::vector<cv::Rect> currentROIRects; // 矩形roi区域
     std::vector<VectorPoint> currentROIOrigPolygons;    // Original roi polygons
     std::vector<std::string> origROIArgs;
     cv::Size currentInFrameSize{0, 0};  // 当前处理帧的尺寸
 
-    // 3. 画图相关的配置
+    // 2. 与ROI显示相关的配置
     bool drawROIArea = false;   // 是否画ROI
     COLOR_BGRA_TYPE roiColor = {120, 120, 120, 1.0f};  // ROI框的颜色
     int roiLineThickness = 4;   // ROI框的粗细
     bool roiFill = false;       // 是否使用颜色填充ROI区域
     bool drawResult = true;         // 是否画检测框
     bool drawConfidence = false;    // 是否画置信度
-    int dogRectLineThickness = 4;   // 目标框粗细
 
-    std::string dogRectText{"dog"};    // 检测目标框顶部文字
-    COLOR_BGRA_TYPE dogRectColor = {0, 255, 0, 1.0f};      // 检测框`mark`的颜色
+    // --------------------------------- 通常需要根据需要修改 START -----------------------------------------
+    // 3. 算法配置参数
+    std::map<std::string, ALGO_CONFIG_TYPE> mAlgoConfigs;   // 针对不同的cid（即camera id）所对应的算法配置
+    ALGO_CONFIG_TYPE mAlgoConfigDefault = {0.6, 0.5, 0.5};     // 默认的算法配置
+
+    // 4. 与报警信息相关的配置
+    int targetRectLineThickness = 4;   // 目标框粗细
+    std::string targetRectText{"dog"};    // 检测目标框顶部文字
+    COLOR_BGRA_TYPE targetRectColor = {0, 255, 0, 1.0f};      // 检测框`mark`的颜色
     COLOR_BGRA_TYPE textFgColor = {0, 0, 0, 0};         // 检测框顶部文字的颜色
     COLOR_BGRA_TYPE textBgColor = {255, 255, 255, 0};   // 检测框顶部文字的背景颜色
-    int dogTextHeight = 30;  // 目标框顶部字体大小
+    int targetTextHeight = 30;  // 目标框顶部字体大小
 
     bool drawWarningText = true;
     int warningTextSize = 40;   // 画到图上的报警文字大小
@@ -49,6 +51,7 @@ struct Configuration {
     COLOR_BGRA_TYPE warningTextFg = {255, 255, 255, 0}; // 报警文字颜色
     COLOR_BGRA_TYPE warningTextBg = {0, 0, 255, 0}; // 报警文字背景颜色
     cv::Point warningTextLeftTop{0, 0}; // 报警文字左上角位置
+    // --------------------------------- 通常需要根据需要修改 END -------------------------------------------
 
     /**
      * @brief 解析json格式的配置参数
@@ -70,19 +73,17 @@ struct Configuration {
         if (drawROIObj != nullptr && (drawROIObj->type == cJSON_True || drawROIObj->type == cJSON_False)) {
             drawROIArea = drawROIObj->valueint;
         }
-        if (drawROIArea) {
-            cJSON *roiColorRootObj = cJSON_GetObjectItem(confObj, "roi_color");
-            if (roiColorRootObj != nullptr && roiColorRootObj->type == cJSON_Array) {
-                getBGRAColor(roiColor, roiColorRootObj);
-            }
-            cJSON *roiThicknessObj = cJSON_GetObjectItem(confObj, "roi_line_thickness");
-            if (roiThicknessObj != nullptr && roiThicknessObj->type == cJSON_Number) {
-                roiLineThickness = roiThicknessObj->valueint;
-            }
-            cJSON *roiFillObj = cJSON_GetObjectItem(confObj, "roi_fill");
-            if (roiFillObj != nullptr && (roiFillObj->type == cJSON_True || roiFillObj->type == cJSON_False)) {
-                roiFill = roiFillObj->valueint;
-            }
+        cJSON *roiColorRootObj = cJSON_GetObjectItem(confObj, "roi_color");
+        if (roiColorRootObj != nullptr && roiColorRootObj->type == cJSON_Array) {
+            getBGRAColor(roiColor, roiColorRootObj);
+        }
+        cJSON *roiThicknessObj = cJSON_GetObjectItem(confObj, "roi_line_thickness");
+        if (roiThicknessObj != nullptr && roiThicknessObj->type == cJSON_Number) {
+            roiLineThickness = roiThicknessObj->valueint;
+        }
+        cJSON *roiFillObj = cJSON_GetObjectItem(confObj, "roi_fill");
+        if (roiFillObj != nullptr && (roiFillObj->type == cJSON_True || roiFillObj->type == cJSON_False)) {
+            roiFill = roiFillObj->valueint;
         }
         cJSON *roiArrObj = cJSON_GetObjectItem(confObj, "roi");
         if (roiArrObj != nullptr && roiArrObj->type == cJSON_Array && cJSON_GetArraySize(roiArrObj) > 0) {
@@ -110,7 +111,7 @@ struct Configuration {
 
         cJSON *markTextObj = cJSON_GetObjectItem(confObj, "mark_text");
         if (markTextObj != nullptr && markTextObj->type == cJSON_String) {
-            dogRectText = markTextObj->valuestring;
+            targetRectText = markTextObj->valuestring;
         }
         cJSON *textFgColorRootObj = cJSON_GetObjectItem(confObj, "object_text_color");
         if (textFgColorRootObj != nullptr && textFgColorRootObj->type == cJSON_Array) {
@@ -122,16 +123,16 @@ struct Configuration {
         }
         cJSON *objectRectLineThicknessObj = cJSON_GetObjectItem(confObj, "object_rect_line_thickness");
         if (objectRectLineThicknessObj != nullptr && objectRectLineThicknessObj->type == cJSON_Number) {
-            dogRectLineThickness = objectRectLineThicknessObj->valueint;
+            targetRectLineThickness = objectRectLineThicknessObj->valueint;
         }
-        cJSON *markRectColorObj = cJSON_GetObjectItem(confObj, "dog_rect_color");
+        cJSON *markRectColorObj = cJSON_GetObjectItem(confObj, "target_rect_color");
         if (markRectColorObj != nullptr && markRectColorObj->type == cJSON_Array) {
-            getBGRAColor(dogRectColor, markRectColorObj);
+            getBGRAColor(targetRectColor, markRectColorObj);
         }
 
         cJSON *markTextSizeObj = cJSON_GetObjectItem(confObj, "object_text_size");
         if (markTextSizeObj != nullptr && markTextSizeObj->type == cJSON_Number) {
-            dogTextHeight = markTextSizeObj->valueint;
+            targetTextHeight = markTextSizeObj->valueint;
         }
 
         cJSON *drawWarningTextObj = cJSON_GetObjectItem(confObj, "draw_warning_text");
@@ -139,38 +140,37 @@ struct Configuration {
             drawWarningText = drawWarningTextObj->valueint;
         }
 
-        if (drawWarningText) {
-            cJSON *warningTextSizeObj = cJSON_GetObjectItem(confObj, "warning_text_size");
-            if (warningTextSizeObj != nullptr && warningTextSizeObj->type == cJSON_Number) {
-                warningTextSize = warningTextSizeObj->valueint;
-            }
+        cJSON *warningTextSizeObj = cJSON_GetObjectItem(confObj, "warning_text_size");
+        if (warningTextSizeObj != nullptr && warningTextSizeObj->type == cJSON_Number) {
+            warningTextSize = warningTextSizeObj->valueint;
+        }
 
-            cJSON *warningTextObj = cJSON_GetObjectItem(confObj, "warning_text");
-            if (warningTextObj != nullptr && warningTextObj->type == cJSON_String) {
-                warningText = warningTextObj->valuestring;
-            }
-            cJSON *warningTextFgObj = cJSON_GetObjectItem(confObj, "warning_text_color");
-            if (warningTextFgObj != nullptr && warningTextFgObj->type == cJSON_Array) {
-                getBGRAColor(warningTextFg, warningTextFgObj);
-            }
-            cJSON *warningTextBgObj = cJSON_GetObjectItem(confObj, "warning_text_bg_color");
-            if (warningTextBgObj != nullptr && warningTextBgObj->type == cJSON_Array) {
-                getBGRAColor(warningTextBg, warningTextBgObj);
-            }
+        cJSON *warningTextObj = cJSON_GetObjectItem(confObj, "warning_text");
+        if (warningTextObj != nullptr && warningTextObj->type == cJSON_String) {
+            warningText = warningTextObj->valuestring;
+        }
+        cJSON *warningTextFgObj = cJSON_GetObjectItem(confObj, "warning_text_color");
+        if (warningTextFgObj != nullptr && warningTextFgObj->type == cJSON_Array) {
+            getBGRAColor(warningTextFg, warningTextFgObj);
+        }
+        cJSON *warningTextBgObj = cJSON_GetObjectItem(confObj, "warning_text_bg_color");
+        if (warningTextBgObj != nullptr && warningTextBgObj->type == cJSON_Array) {
+            getBGRAColor(warningTextBg, warningTextBgObj);
+        }
 
-            cJSON *warningTextLefTopObj = cJSON_GetObjectItem(confObj, "warning_text_left_top");
-            if (warningTextLefTopObj != nullptr && warningTextLefTopObj->type == cJSON_Array) {
-                cJSON *leftObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
-                cJSON *topObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
-                if (leftObj != nullptr && leftObj->type == cJSON_Number) {
-                    warningTextLeftTop.x = leftObj->valueint;
-                }
-                if (topObj != nullptr && topObj->type == cJSON_Number) {
-                    warningTextLeftTop.y = topObj->valueint;
-                }
+        cJSON *warningTextLefTopObj = cJSON_GetObjectItem(confObj, "warning_text_left_top");
+        if (warningTextLefTopObj != nullptr && warningTextLefTopObj->type == cJSON_Array) {
+            cJSON *leftObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
+            cJSON *topObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
+            if (leftObj != nullptr && leftObj->type == cJSON_Number) {
+                warningTextLeftTop.x = leftObj->valueint;
+            }
+            if (topObj != nullptr && topObj->type == cJSON_Number) {
+                warningTextLeftTop.y = topObj->valueint;
             }
         }
 
+        // -------------------------- 通常需要根据需要修改的算法配置 START ---------------------------------------
         // 针对不同的cid获取算法配置参数，如果没有cid参数，就使用默认的配置参数
         ALGO_CONFIG_TYPE algoConfig{mAlgoConfigDefault.nms, mAlgoConfigDefault.thresh, mAlgoConfigDefault.hierThresh};
         bool isNeedUpdateThresh = false;
@@ -181,6 +181,8 @@ struct Configuration {
             isNeedUpdateThresh = true;
             algoConfig.thresh = newThresh;
         }
+        // -------------------------- 通常需要根据需要修改的算法配置 END -----------------------------------------
+
         cJSON *cidObj = cJSON_GetObjectItem(confObj, "cid");
         if (cidObj != nullptr && cidObj->type == cJSON_String) {
             // 如果能够找到cid，当前配置就针对对应的cid进行更改
