@@ -70,19 +70,17 @@ struct Configuration {
         if (drawROIObj != nullptr && (drawROIObj->type == cJSON_True || drawROIObj->type == cJSON_False)) {
             drawROIArea = drawROIObj->valueint;
         }
-        if (drawROIArea) {
-            cJSON *roiColorRootObj = cJSON_GetObjectItem(confObj, "roi_color");
-            if (roiColorRootObj != nullptr && roiColorRootObj->type == cJSON_Array) {
-                getBGRAColor(roiColor, roiColorRootObj);
-            }
-            cJSON *roiThicknessObj = cJSON_GetObjectItem(confObj, "roi_line_thickness");
-            if (roiThicknessObj != nullptr && roiThicknessObj->type == cJSON_Number) {
-                roiLineThickness = roiThicknessObj->valueint;
-            }
-            cJSON *roiFillObj = cJSON_GetObjectItem(confObj, "roi_fill");
-            if (roiFillObj != nullptr && (roiFillObj->type == cJSON_True || roiFillObj->type == cJSON_False)) {
-                roiFill = roiFillObj->valueint;
-            }
+        cJSON *roiColorRootObj = cJSON_GetObjectItem(confObj, "roi_color");
+        if (roiColorRootObj != nullptr && roiColorRootObj->type == cJSON_Array) {
+            getBGRAColor(roiColor, roiColorRootObj);
+        }
+        cJSON *roiThicknessObj = cJSON_GetObjectItem(confObj, "roi_line_thickness");
+        if (roiThicknessObj != nullptr && roiThicknessObj->type == cJSON_Number) {
+            roiLineThickness = roiThicknessObj->valueint;
+        }
+        cJSON *roiFillObj = cJSON_GetObjectItem(confObj, "roi_fill");
+        if (roiFillObj != nullptr && (roiFillObj->type == cJSON_True || roiFillObj->type == cJSON_False)) {
+            roiFill = roiFillObj->valueint;
         }
         cJSON *roiArrObj = cJSON_GetObjectItem(confObj, "roi");
         if (roiArrObj != nullptr && roiArrObj->type == cJSON_Array && cJSON_GetArraySize(roiArrObj) > 0) {
@@ -139,35 +137,33 @@ struct Configuration {
             drawWarningText = drawWarningTextObj->valueint;
         }
 
-        if (drawWarningText) {
-            cJSON *warningTextSizeObj = cJSON_GetObjectItem(confObj, "warning_text_size");
-            if (warningTextSizeObj != nullptr && warningTextSizeObj->type == cJSON_Number) {
-                warningTextSize = warningTextSizeObj->valueint;
-            }
+        cJSON *warningTextSizeObj = cJSON_GetObjectItem(confObj, "warning_text_size");
+        if (warningTextSizeObj != nullptr && warningTextSizeObj->type == cJSON_Number) {
+            warningTextSize = warningTextSizeObj->valueint;
+        }
 
-            cJSON *warningTextObj = cJSON_GetObjectItem(confObj, "warning_text");
-            if (warningTextObj != nullptr && warningTextObj->type == cJSON_String) {
-                warningText = warningTextObj->valuestring;
-            }
-            cJSON *warningTextFgObj = cJSON_GetObjectItem(confObj, "warning_text_color");
-            if (warningTextFgObj != nullptr && warningTextFgObj->type == cJSON_Array) {
-                getBGRAColor(warningTextFg, warningTextFgObj);
-            }
-            cJSON *warningTextBgObj = cJSON_GetObjectItem(confObj, "warning_text_bg_color");
-            if (warningTextBgObj != nullptr && warningTextBgObj->type == cJSON_Array) {
-                getBGRAColor(warningTextBg, warningTextBgObj);
-            }
+        cJSON *warningTextObj = cJSON_GetObjectItem(confObj, "warning_text");
+        if (warningTextObj != nullptr && warningTextObj->type == cJSON_String) {
+            warningText = warningTextObj->valuestring;
+        }
+        cJSON *warningTextFgObj = cJSON_GetObjectItem(confObj, "warning_text_color");
+        if (warningTextFgObj != nullptr && warningTextFgObj->type == cJSON_Array) {
+            getBGRAColor(warningTextFg, warningTextFgObj);
+        }
+        cJSON *warningTextBgObj = cJSON_GetObjectItem(confObj, "warning_text_bg_color");
+        if (warningTextBgObj != nullptr && warningTextBgObj->type == cJSON_Array) {
+            getBGRAColor(warningTextBg, warningTextBgObj);
+        }
 
-            cJSON *warningTextLefTopObj = cJSON_GetObjectItem(confObj, "warning_text_left_top");
-            if (warningTextLefTopObj != nullptr && warningTextLefTopObj->type == cJSON_Array) {
-                cJSON *leftObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
-                cJSON *topObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
-                if (leftObj != nullptr && leftObj->type == cJSON_Number) {
-                    warningTextLeftTop.x = leftObj->valueint;
-                }
-                if (topObj != nullptr && topObj->type == cJSON_Number) {
-                    warningTextLeftTop.y = topObj->valueint;
-                }
+        cJSON *warningTextLefTopObj = cJSON_GetObjectItem(confObj, "warning_text_left_top");
+        if (warningTextLefTopObj != nullptr && warningTextLefTopObj->type == cJSON_Array) {
+            cJSON *leftObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
+            cJSON *topObj = cJSON_GetArrayItem(warningTextLefTopObj, 0);
+            if (leftObj != nullptr && leftObj->type == cJSON_Number) {
+                warningTextLeftTop.x = leftObj->valueint;
+            }
+            if (topObj != nullptr && topObj->type == cJSON_Number) {
+                warningTextLeftTop.y = topObj->valueint;
             }
         }
 
