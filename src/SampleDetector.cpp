@@ -7,9 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <glog/logging.h>
-#include <cJSON.h>
 #include "SampleDetector.hpp"
-#include "ji_utils.h"
 
 SampleDetector::SampleDetector(double thresh, double nms, double hierThresh):
     mNetworkPtr(NULL), mNms(nms), mThresh(thresh), mHIERThresh(hierThresh) {
@@ -97,7 +95,10 @@ STATUS SampleDetector::processImage(const cv::Mat &cv_image, std::vector<Object>
                 rect.height = detections[i].bbox.h * cv_image.rows;
                 rect.x = detections[i].bbox.x * cv_image.cols - rect.width / 2;
                 rect.y = detections[i].bbox.y * cv_image.rows - rect.height / 2;
-                result.push_back({detections[i].prob[j], mLabels[j], rect});
+                // 只输出检测到的目标`狗`
+                if (std::string(mLabels[j]) == "dog") {
+                    result.push_back({detections[i].prob[j], mLabels[j], rect});
+                }
             }
         }
     }

@@ -84,36 +84,27 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
 
     // 针对每个ROI进行算法处理
     std::vector<SampleDetector::Object> detectedObjects;
-    std::vector<cv::Rect> detectedTargets;
+    std::vector<SampleDetector::Object> validTargets;
 
     // 算法处理
-    for (auto &roiRect : config.currentROIRects) {
-        LOG(WARNING) << "current roi:" << roiRect;
-        // Fix darknet save_image bug, image width and height should be divisible by 2
-        if (roiRect.width % 2 != 0) {
-            roiRect.width -= 1;
-        }
-        if (roiRect.height % 2 != 0) {
-            roiRect.height -= 1;
-        }
-
-        cv::Mat croppedMat = inFrame(roiRect).clone();
-
-        std::vector<SampleDetector::Object> objects;
-        int processRet = detector->processImage(croppedMat, objects);
-        if (processRet != SampleDetector::PROCESS_OK) {
-            return JISDK_RET_FAILED;
-        }
-        for (auto &object : objects) {
-            object.rect.x += roiRect.x;
-            object.rect.y += roiRect.y;
-            detectedObjects.emplace_back(object);
+    int processRet = detector->processImage(inFrame, detectedObjects);
+    if (processRet != SampleDetector::PROCESS_OK) {
+        return JISDK_RET_FAILED;
+    }
+    for (auto &obj : detectedObjects) {
+        for (auto &roiPolygon : config.currentROIOrigPolygons) {
+            int mid_x = obj.rect.x + obj.rect.width / 2;
+            int mid_y = obj.rect.y + obj.rect.height / 2;
+            // 当检测的目标在ROI内的话，就视为有效目标
+            if (WKTParser::inPolygon(roiPolygon, cv::Point(mid_x, mid_y))) {
+                validTargets.emplace_back(obj);
+                break;
+            }
         }
     }
 
     // 此处示例业务逻辑：当算法检测到有`dog`时，就报警
     bool isNeedAlert = false;   // 是否需要报警
-    std::vector<SampleDetector::Object> dogs;   // 检测到的`dog`
 
     // 创建输出图
     inFrame.copyTo(outFrame);
@@ -123,25 +114,23 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
                 config.roiColor[3], cv::LINE_AA, config.roiLineThickness, config.roiFill);
     }
     // 判断是否要要报警并将检测到的目标画到输出图上
-    for (auto &object : detectedObjects) {
+    if (validTargets.size() > 0) {
         // 如果检测到有`狗`就报警
-        if (strcmp(object.name.c_str(), "dog") == 0) {
-            LOG(INFO) << "Found " << object.name;
-            if (config.drawResult) {
-                std::stringstream ss;
-                ss << config.dogRectText;
-                if (config.drawConfidence) {
-                    ss.precision(2);
-                    ss << std::fixed << (config.dogRectText.empty() ? "" : ": ") << object.prob * 100 << "%";
-                }
-                drawRectAndText(outFrame, object.rect, ss.str(), config.dogRectLineThickness, cv::LINE_AA,
-                        cv::Scalar(config.dogRectColor[0], config.dogRectColor[1], config.dogRectColor[2]), config.dogRectColor[3], config.dogTextHeight,
-                        cv::Scalar(config.textFgColor[0], config.textFgColor[1], config.textFgColor[2]),
-                        cv::Scalar(config.textBgColor[0], config.textBgColor[1], config.textBgColor[2]));
+        isNeedAlert = true;
+    }
+    for (auto &object : validTargets) {
+        LOG(INFO) << "Found " << object.name;
+        if (config.drawResult) {
+            std::stringstream ss;
+            ss << config.dogRectText;
+            if (config.drawConfidence) {
+                ss.precision(2);
+                ss << std::fixed << (config.dogRectText.empty() ? "" : ": ") << object.prob * 100 << "%";
             }
-
-            isNeedAlert = true;
-            dogs.push_back(object);
+            drawRectAndText(outFrame, object.rect, ss.str(), config.dogRectLineThickness, cv::LINE_AA,
+                    cv::Scalar(config.dogRectColor[0], config.dogRectColor[1], config.dogRectColor[2]), config.dogRectColor[3], config.dogTextHeight,
+                    cv::Scalar(config.textFgColor[0], config.textFgColor[1], config.textFgColor[2]),
+                    cv::Scalar(config.textBgColor[0], config.textBgColor[1], config.textBgColor[2]));
         }
     }
 
@@ -159,7 +148,7 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
     }
     cJSON_AddItemToObject(rootObj, JSON_ALERT_FLAG_KEY, cJSON_CreateNumber(jsonAlertCode));
     cJSON *dogsObj = cJSON_CreateArray();
-    for (auto &dog : dogs) {
+    for (auto &dog : validTargets) {
         cJSON *odbObj = cJSON_CreateObject();
         int x = dog.rect.x;
         int y = dog.rect.y;
