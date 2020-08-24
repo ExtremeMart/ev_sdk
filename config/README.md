@@ -19,7 +19,8 @@
    - `object_text_bg_color`：目标框顶部文字的背景颜色，BGRA浮点型数组格式，BGR三通道的范围是`[0,255]`，第四个元素不使用，默认：`[50, 50, 50, 0]`
    - `object_text_size`：目标框顶部文字大小，整形，范围`[1,50]`，默认：`30`
    - `draw_warning_text`：是否画报警信息文字，`true`是，`false`否，默认：`true`
-   - `warning_text`：报警文字，默认：`WARNING!`
+   - `warning_text_en`：报警文字（英文），默认：`WARNING!`
+   - `warning_text_zh`：报警文字（中文），默认：`警告！`
    - `warning_text_size`：报警文字大小，范围`[1,50]`，默认:`30`
    - `warning_text_color`：报警文字颜色，BGRA浮点型数组格式，BGR三通道的范围是`[0,255]`，第四个元素不使用，默认：`[255, 255, 255, 0]`
    - `warning_text_bg_color`：报警文字背景颜色，BGRA浮点型数组格式，BGR三通道的范围是`[0,255]`，第四个元素不使用，默认：`[0, 0, 200, 0]`
