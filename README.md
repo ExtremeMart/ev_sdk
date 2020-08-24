@@ -280,6 +280,7 @@ make install
      - `thresh`：算法阈值，需要有可以调整算法灵敏度、召回率、精确率的阈值参数，如果算法配置项有多个参数，请自行扩展，所有与算法效果相关并且可以变动的参数**必须**在`/usr/local/ev_sdk/config/README.md`中提供详细的配置方法和说明（包括类型、取值范围、建议值、默认值、对算法效果的影响等）；
      - `draw_result`：`true`或者`false`，是否绘制分析结果，比如示例程序中，如果检测到狗，是否将检测框和文字画在输出图中；
      - `draw_confidence`：`true`或者`false`，是否将置信度画在检测框顶部，小数点后保留两位；
+     - `language`：所显示文字的语言，需要支持`en`和`zh`两种选项，分别对应英文和中文；
      - 所有`json`内的键名称必须是小写字母，并且单词间以下划线分隔，如上面几个示例。
    - **必须支持参数实时更新**。所有`/usr/local/ev_sdk/config/algo_config.json`内的可配置参数必须支持能够在调用`ji_calc_frame`、`ji_calc_buffer`、`ji_calc_file`、`ji_calc_video_file`四个接口时，进行实时更新。也就是必须要在`ji_calc_*`等接口的`args`参数中，加入这些可配置项。
 

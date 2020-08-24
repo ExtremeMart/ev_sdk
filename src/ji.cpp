@@ -122,10 +122,10 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
         LOG(INFO) << "Found " << object.name;
         if (config.drawResult) {
             std::stringstream ss;
-            ss << config.targetRectText;
+            ss << config.targetRectTextMap[config.language];
             if (config.drawConfidence) {
                 ss.precision(2);
-                ss << std::fixed << (config.targetRectText.empty() ? "" : ": ") << object.prob * 100 << "%";
+                ss << std::fixed << (config.targetRectTextMap[config.language].empty() ? "" : ": ") << object.prob * 100 << "%";
             }
             drawRectAndText(outFrame, object.rect, ss.str(), config.targetRectLineThickness, cv::LINE_AA,
                             cv::Scalar(config.targetRectColor[0], config.targetRectColor[1], config.targetRectColor[2]), config.targetRectColor[3], config.targetTextHeight,
@@ -135,7 +135,7 @@ int processMat(SampleDetector *detector, const cv::Mat &inFrame, const char* arg
     }
 
     if (isNeedAlert && config.drawWarningText) {
-        drawText(outFrame, config.warningText, config.warningTextSize,
+        drawText(outFrame, config.warningTextMap[config.language], config.warningTextSize,
                  cv::Scalar(config.warningTextFg[0], config.warningTextFg[1], config.warningTextFg[2]),
                  cv::Scalar(config.warningTextBg[0], config.warningTextBg[1], config.warningTextBg[2]), config.warningTextLeftTop);
     }

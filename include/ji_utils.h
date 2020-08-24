@@ -8,6 +8,8 @@
 #include <opencv2/freetype.hpp>
 #include <fstream>
 
+#define DEFAULT_FONT_PATH "/usr/local/ev_sdk/lib/fonts/NotoSansCJKsc-Regular.otf"
+
 /**
  * 获取文件大小
  *
@@ -51,7 +53,7 @@ static void drawRectAndText(cv::Mat &img, cv::Rect &leftTopRightBottomRect, cons
     cv::Ptr<cv::freetype::FreeType2> ft2;
     int baseline = 0;
     ft2 = cv::freetype::createFreeType2();
-    ft2->loadFontData("/usr/local/ev_sdk/lib/fonts/DejaVuSans.ttf", 0);
+    ft2->loadFontData(DEFAULT_FONT_PATH, 0);
 
     cv::Size textSize = ft2->getTextSize(text, fontHeight, -1, &baseline);
     cv::Point textLeftBottom(leftTopRightBottomRect.x, leftTopRightBottomRect.y);
@@ -121,7 +123,7 @@ static void drawText(cv::Mat &img, const std::string &text, int fontHeight, cons
     cv::Ptr<cv::freetype::FreeType2> ft2;
     int baseline = 0;
     ft2 = cv::freetype::createFreeType2();
-    ft2->loadFontData("/usr/local/ev_sdk/lib/fonts/DejaVuSans.ttf", 0);
+    ft2->loadFontData(DEFAULT_FONT_PATH, 0);
     cv::Size textSize = ft2->getTextSize(text, fontHeight, -1, &baseline);
     cv::Point textLeftBottom(0, textSize.height);
     textLeftBottom -= cv::Point(0, baseline);   // (left, bottom) of text

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 #include <opencv2/opencv.hpp>
 #include "cJSON.h"
 #include "SampleDetector.hpp"
@@ -38,8 +39,12 @@ struct Configuration {
     ALGO_CONFIG_TYPE mAlgoConfigDefault = {0.6, 0.5, 0.5};     // 默认的算法配置
 
     // 4. 与报警信息相关的配置
+    std::string language = "en";    // 所显示文字的默认语言
     int targetRectLineThickness = 4;   // 目标框粗细
-    std::string targetRectText{"dog"};    // 检测目标框顶部文字
+    std::map<std::string, std::string> targetRectTextMap = {    // 检测目标框顶部文字
+            {"en", "dog"},
+            {"zh", "狗"}
+    };
     COLOR_BGRA_TYPE targetRectColor = {0, 255, 0, 1.0f};      // 检测框`mark`的颜色
     COLOR_BGRA_TYPE textFgColor = {0, 0, 0, 0};         // 检测框顶部文字的颜色
     COLOR_BGRA_TYPE textBgColor = {255, 255, 255, 0};   // 检测框顶部文字的背景颜色
@@ -47,7 +52,10 @@ struct Configuration {
 
     bool drawWarningText = true;
     int warningTextSize = 40;   // 画到图上的报警文字大小
-    std::string warningText{"WARNING!"};    // 画到图上的报警文字
+    std::map<std::string, std::string> warningTextMap = {    // 画到图上的报警文字
+            {"en", "WARNING! WARNING!"},
+            {"zh", "警告"}
+    };
     COLOR_BGRA_TYPE warningTextFg = {255, 255, 255, 0}; // 报警文字颜色
     COLOR_BGRA_TYPE warningTextBg = {0, 0, 255, 0}; // 报警文字背景颜色
     cv::Point warningTextLeftTop{0, 0}; // 报警文字左上角位置
@@ -100,6 +108,10 @@ struct Configuration {
                 updateROIInfo(currentInFrameSize.width, currentInFrameSize.height);
             }
         }
+        cJSON *languageObj = cJSON_GetObjectItem(confObj, "language");
+        if (languageObj != nullptr && languageObj->type == cJSON_String) {
+            language = languageObj->valuestring;
+        }
         cJSON *drawResultObj = cJSON_GetObjectItem(confObj, "draw_result");
         if (drawResultObj != nullptr && (drawResultObj->type == cJSON_True || drawResultObj->type == cJSON_False)) {
             drawResult = drawResultObj->valueint;
@@ -109,9 +121,13 @@ struct Configuration {
             drawConfidence = drawConfObj->valueint;
         }
 
-        cJSON *markTextObj = cJSON_GetObjectItem(confObj, "mark_text");
-        if (markTextObj != nullptr && markTextObj->type == cJSON_String) {
-            targetRectText = markTextObj->valuestring;
+        cJSON *markTextEnObj = cJSON_GetObjectItem(confObj, "mark_text_en");
+        if (markTextEnObj != nullptr && markTextEnObj->type == cJSON_String) {
+            targetRectTextMap["en"] = markTextEnObj->valuestring;
+        }
+        cJSON *markTextZhObj = cJSON_GetObjectItem(confObj, "mark_text_zh");
+        if (markTextZhObj != nullptr && markTextZhObj->type == cJSON_String) {
+            targetRectTextMap["zh"] = markTextZhObj->valuestring;
         }
         cJSON *textFgColorRootObj = cJSON_GetObjectItem(confObj, "object_text_color");
         if (textFgColorRootObj != nullptr && textFgColorRootObj->type == cJSON_Array) {
@@ -145,9 +161,13 @@ struct Configuration {
             warningTextSize = warningTextSizeObj->valueint;
         }
 
-        cJSON *warningTextObj = cJSON_GetObjectItem(confObj, "warning_text");
-        if (warningTextObj != nullptr && warningTextObj->type == cJSON_String) {
-            warningText = warningTextObj->valuestring;
+        cJSON *warningTextEnObj = cJSON_GetObjectItem(confObj, "warning_text_en");
+        if (warningTextEnObj != nullptr && warningTextEnObj->type == cJSON_String) {
+            warningTextMap["en"] = warningTextEnObj->valuestring;
+        }
+        cJSON *warningTextZhObj = cJSON_GetObjectItem(confObj, "warning_text_zh");
+        if (warningTextZhObj != nullptr && warningTextZhObj->type == cJSON_String) {
+            warningTextMap["zh"] = warningTextZhObj->valuestring;
         }
         cJSON *warningTextFgObj = cJSON_GetObjectItem(confObj, "warning_text_color");
         if (warningTextFgObj != nullptr && warningTextFgObj->type == cJSON_Array) {
