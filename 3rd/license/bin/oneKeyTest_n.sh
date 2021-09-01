@@ -1,7 +1,5 @@
 #! /bin/bash
 
-# 测试联网校验
-
 #./generateRsaKey.sh
 #ret=$?; if [[ 0 -ne ${ret} ]]; then echo "generateRsaKey failed!"; exit $ret; fi
 
