@@ -1,5 +1,7 @@
 # EV_SDK
 
+### 本文档最新版请移步👉https://github.com/ExtremeMart/dev-docs
+
 ## 说明
 ### EV_SDK的目标
 开发者专注于算法开发及优化，最小化业务层编码，即可快速部署到生产环境，共同打造商用级高质量算法。
